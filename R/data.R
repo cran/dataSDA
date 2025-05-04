@@ -476,3 +476,26 @@
 #' data(Abalone.iGAP)
 #' @keywords datasets
 "Abalone.iGAP"
+
+#' @name Abalone
+#' @title Abalone Dataset
+#' @description A interval-valued data set containing 24 units,
+#' created from from the Abalone dataset (UCI Machine Learning Repository), after aggregating by sex and age.
+#' @usage data(Abalone)
+#' @references Billard L. and  Diday E. (2006).Symbolic data analysis:
+#' Conceptual statistics and data mining. Wiley, Chichester.
+#' @examples
+#' data(Abalone)
+#' @keywords datasets
+"Abalone"
+
+#' @name Face.iGAP
+#' @title Face iGAP format Dataset
+#' @description Symbolic data matrix with all the variables of interval type.
+#' @usage data(Face.iGAP)
+#' @references Billard L. and  Diday E. (2006).Symbolic data analysis:
+#' Conceptual statistics and data mining. Wiley, Chichester.
+#' @examples
+#' data(Face.iGAP)
+#' @keywords datasets
+"Face.iGAP"

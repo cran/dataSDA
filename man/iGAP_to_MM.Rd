@@ -7,17 +7,17 @@
 iGAP_to_MM(data, location)
 }
 \arguments{
-\item{data}{The iGAP file.}
+\item{data}{The dataframe with the iGAP format.}
 
 \item{location}{The location of the symbolic variable in the data.}
 }
 \value{
-A CSV data file.
+Return a dataframe with the MM format.
 }
 \description{
-To convert iGAP files to CSV files.
+To convert iGAP format to MM format.
 }
 \examples{
 data(Abalone.iGAP)
-Abalone <- iGAP_to_MM(Abalone.iGAP, c(1, 2, 3, 4, 5, 6, 7))
+Abalone <- iGAP_to_MM(Abalone.iGAP, 1:7)
 }

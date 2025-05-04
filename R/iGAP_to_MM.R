@@ -2,16 +2,16 @@
 #'
 #' @name iGAP_to_MM
 #' @aliases iGAP_to_MM
-#' @description To convert iGAP files to CSV files.
+#' @description To convert iGAP format to MM format.
 #' @usage iGAP_to_MM(data, location)
-#' @param data The iGAP file.
+#' @param data The dataframe with the iGAP format.
 #' @param location The location of the symbolic variable in the data.
-#' @returns A CSV data file.
+#' @returns Return a dataframe with the MM format.
 #' @importFrom tidyr separate
 #' @importFrom magrittr %>%
 #' @examples
 #' data(Abalone.iGAP)
-#' Abalone <- iGAP_to_MM(Abalone.iGAP, c(1, 2, 3, 4, 5, 6, 7))
+#' Abalone <- iGAP_to_MM(Abalone.iGAP, 1:7)
 #' @export
 
 iGAP_to_MM <- function(data, location = NULL){
@@ -26,3 +26,4 @@ iGAP_to_MM <- function(data, location = NULL){
   }
   return(data)
 }
+
