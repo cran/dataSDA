@@ -1,7 +1,7 @@
 ---
 title: "Introduction to dataSDA"
 author: "Po-Wei Chen, Chun-houh Chen and Han-Ming Wu*"
-date: "2025-04-30"
+date: "2025-06-07"
 output: 
   rmarkdown::html_vignette:
     toc: true

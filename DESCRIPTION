@@ -1,8 +1,8 @@
 Package: dataSDA
 Type: Package
 Title: Datasets and Basic Statistics for Symbolic Data Analysis
-Version: 0.1.1
-Date: 2025-04-30
+Version: 0.1.2
+Date: 2025-06-07
 Authors@R: c(
     person("Po-Wei", "Chen", email = "randy310162@gmail.com", role = "aut"),
     person("Han-Ming", "Wu", email = "wuhm@g.nccu.edu.tw", role = "cre"))
@@ -19,6 +19,6 @@ Suggests: testthat (>= 2.1.0), knitr, rmarkdown
 VignetteBuilder: knitr
 Imports: magrittr, tidyr, dplyr, RSDA, HistDAWass
 NeedsCompilation: no
-Packaged: 2025-05-04 00:20:25 UTC; hmwu
+Packaged: 2025-06-07 09:18:32 UTC; hmwu
 Repository: CRAN
-Date/Publication: 2025-05-04 04:30:06 UTC
+Date/Publication: 2025-06-07 23:30:09 UTC

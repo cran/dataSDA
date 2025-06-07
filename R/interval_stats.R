@@ -3,9 +3,9 @@ options <- c("CM", "VM", "QM", "SE", "FV", "EJD", "GQ", "SPT")
 #' @title Statistics for Interval Data
 #' @description Functions to compute the mean, variance, covariance, and correlation of interval-valued data.
 #' @param x interval-valued data with symbolic_tbl class.
-#' @param var_name the vraiable name or the column location (multiple vraiables are allowed).
-#' @param var_name1 the vraiable name or the column location (multiple vraiables are allowed).
-#' @param var_name2 the vraiable name or the column location (multiple vraiables are allowed).
+#' @param var_name the variable name or the column location (multiple variables are allowed).
+#' @param var_name1 the variable name or the column location (multiple variables are allowed).
+#' @param var_name2 the variable name or the column location (multiple variables are allowed).
 #' @param method methods to calculate statistics: CM (default), VM, QM, SE, FV, EJD, GQ, SPT.
 #' @param ... additional parameters
 #' @return A numeric value: the mean, variance, covariance, or correlation.

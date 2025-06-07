@@ -19,15 +19,15 @@ int_cor(x, var_name1, var_name2, method = "CM", ...)
 \arguments{
 \item{x}{interval-valued data with symbolic_tbl class.}
 
-\item{var_name}{the vraiable name or the column location (multiple vraiables are allowed).}
+\item{var_name}{the variable name or the column location (multiple variables are allowed).}
 
 \item{method}{methods to calculate statistics: CM (default), VM, QM, SE, FV, EJD, GQ, SPT.}
 
 \item{...}{additional parameters}
 
-\item{var_name1}{the vraiable name or the column location (multiple vraiables are allowed).}
+\item{var_name1}{the variable name or the column location (multiple variables are allowed).}
 
-\item{var_name2}{the vraiable name or the column location (multiple vraiables are allowed).}
+\item{var_name2}{the variable name or the column location (multiple variables are allowed).}
 }
 \value{
 A numeric value: the mean, variance, covariance, or correlation.

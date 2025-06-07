@@ -19,15 +19,15 @@ hist_cor(x, var_name1, var_name2, method = "BG")
 \arguments{
 \item{x}{histogram-valued data object.}
 
-\item{var_name}{the vraiable name or the column location.}
+\item{var_name}{the variable name or the column location.}
 
 \item{method}{methods to calculate statistics: mean and var: BG (default), L2W; cov and cor: BG (default), BD, B, L2W.}
 
 \item{...}{additional parameters.}
 
-\item{var_name1}{the vraiable name or the column location.}
+\item{var_name1}{the variable name or the column location.}
 
-\item{var_name2}{the vraiable name or the column location.}
+\item{var_name2}{the variable name or the column location.}
 }
 \value{
 A numeric value: the mean, variance, covariance, or correlation.

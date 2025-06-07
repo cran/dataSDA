@@ -2,9 +2,9 @@
 #' @title Statistics for Histogram Data
 #' @description Functions to compute the mean, variance, covariance, and correlation of histogram-valued data.
 #' @param x histogram-valued data object.
-#' @param var_name the vraiable name or the column location.
-#' @param var_name1 the vraiable name or the column location.
-#' @param var_name2 the vraiable name or the column location.
+#' @param var_name the variable name or the column location.
+#' @param var_name1 the variable name or the column location.
+#' @param var_name2 the variable name or the column location.
 #' @param method methods to calculate statistics: mean and var: BG (default), L2W; cov and cor: BG (default), BD, B, L2W.
 #' @param ... additional parameters.
 #' @return A numeric value: the mean, variance, covariance, or correlation.
