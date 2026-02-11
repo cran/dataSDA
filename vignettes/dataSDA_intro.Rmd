@@ -1,0 +1,589 @@
+---
+title: "Introduction to dataSDA"
+subtitle: "Datasets and Basic Statistics for Symbolic Data Analysis"
+author: "Po-Wei Chen, Chun-houh Chen and Han-Ming Wu*"
+date: "February 11, 2026"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+
+vignette: >
+  %\VignetteIndexEntry{Introduction to dataSDA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  out.width = "100%",
+  fig.align = "center"
+)
+library(knitr)
+library(dataSDA)
+library(RSDA)
+library(HistDAWass)
+```
+
+# Introduction
+
+The `dataSDA` package (v0.1.8) gathers various symbolic data tailored to different research themes and provides a comprehensive set of functions for reading, writing, converting, and analyzing symbolic data. The package is available on CRAN at <https://CRAN.R-project.org/package=dataSDA> and on GitHub at <https://github.com/hanmingwu1103/dataSDA>.
+
+The package provides functions organized into the following categories:
+
+| Category | Functions | Count |
+|:---------|:----------|------:|
+| Format detection & conversion | `int_detect_format`, `int_list_conversions`, `int_convert_format`, `RSDA_to_MM`, `iGAP_to_MM`, `SODAS_to_MM`, `MM_to_iGAP`, `RSDA_to_iGAP`, `SODAS_to_iGAP`, `MM_to_RSDA`, `iGAP_to_RSDA` | 11 |
+| Core statistics | `int_mean`, `int_var`, `int_cov`, `int_cor` | 4 |
+| Geometric properties | `int_width`, `int_radius`, `int_center`, `int_midrange`, `int_overlap`, `int_containment` | 6 |
+| Position & scale | `int_median`, `int_quantile`, `int_range`, `int_iqr`, `int_mad`, `int_mode` | 6 |
+| Robust statistics | `int_trimmed_mean`, `int_winsorized_mean`, `int_trimmed_var`, `int_winsorized_var` | 4 |
+| Distribution shape | `int_skewness`, `int_kurtosis`, `int_symmetry`, `int_tailedness` | 4 |
+| Similarity measures | `int_jaccard`, `int_dice`, `int_cosine`, `int_overlap_coefficient`, `int_tanimoto`, `int_similarity_matrix` | 6 |
+| Uncertainty & variability | `int_entropy`, `int_cv`, `int_dispersion`, `int_imprecision`, `int_granularity`, `int_uniformity`, `int_information_content` | 7 |
+| Distance measures | `int_dist`, `int_dist_matrix`, `int_pairwise_dist`, `int_dist_all` | 4 |
+| Histogram statistics | `hist_mean`, `hist_var`, `hist_cov`, `hist_cor` | 4 |
+| Utilities | `clean_colnames`, `RSDA_format`, `set_variable_format`, `write_csv_table` | 4 |
+
+
+# Data Formats and Conversion
+
+## Interval data formats overview
+
+The `dataSDA` package works with three primary formats for interval-valued data:
+
+- **RSDA format**: `symbolic_tbl` objects where intervals are encoded as complex numbers (`min + max*i`). Used by the `RSDA` package.
+- **MM format**: Standard data frames with paired `_min` / `_max` columns for each variable.
+- **iGAP format**: Data frames where each interval is a comma-separated string (e.g., `"2.5,4.0"`).
+
+```{r}
+data(mushroom.int)
+head(mushroom.int, 3)
+class(mushroom.int)
+```
+
+```{r}
+data(abalone.int)
+head(abalone.int, 3)
+class(abalone.int)
+```
+
+```{r}
+data(abalone.iGAP)
+head(abalone.iGAP, 3)
+class(abalone.iGAP)
+```
+
+The `int_detect_format()` function automatically identifies the format of a dataset:
+
+```{r}
+int_detect_format(mushroom.int)
+int_detect_format(abalone.int)
+int_detect_format(abalone.iGAP)
+```
+
+Use `int_list_conversions()` to see all available format conversion paths:
+
+```{r}
+int_list_conversions()
+```
+
+## Unified format conversion
+
+The `int_convert_format()` function provides a unified interface for converting between formats. It auto-detects the source format and applies the appropriate conversion:
+
+```{r}
+# RSDA to MM
+mushroom.MM <- int_convert_format(mushroom.int, to = "MM")
+head(mushroom.MM, 3)
+```
+
+```{r}
+# iGAP to MM
+abalone.MM <- int_convert_format(abalone.iGAP, to = "MM")
+head(abalone.MM, 3)
+```
+
+```{r}
+# iGAP to RSDA
+data(face.iGAP)
+face.RSDA <- int_convert_format(face.iGAP, to = "RSDA")
+head(face.RSDA, 3)
+```
+
+## Direct conversion functions
+
+For explicit control, direct conversion functions are available:
+
+```{r}
+# RSDA to MM
+mushroom.MM <- RSDA_to_MM(mushroom.int, RSDA = TRUE)
+head(mushroom.MM, 3)
+```
+
+```{r}
+# MM to iGAP
+mushroom.iGAP <- MM_to_iGAP(mushroom.MM)
+head(mushroom.iGAP, 3)
+```
+
+```{r}
+# iGAP to MM
+data(face.iGAP)
+face.MM <- iGAP_to_MM(face.iGAP, location = 1:6)
+head(face.MM, 3)
+```
+
+```{r}
+# MM to RSDA
+face.RSDA <- MM_to_RSDA(face.MM)
+head(face.RSDA, 3)
+class(face.RSDA)
+```
+
+```{r}
+# iGAP to RSDA (direct, one-step)
+abalone.RSDA <- iGAP_to_RSDA(abalone.iGAP, location = 1:7)
+head(abalone.RSDA, 3)
+class(abalone.RSDA)
+```
+
+```{r}
+# RSDA to iGAP
+mushroom.iGAP2 <- RSDA_to_iGAP(mushroom.int)
+head(mushroom.iGAP2, 3)
+```
+
+The `SODAS_to_MM()` and `SODAS_to_iGAP()` functions convert SODAS XML files but require an XML file path and are not demonstrated here.
+
+## Legacy workflow: creating symbolic_tbl from raw data
+
+The traditional workflow for converting a raw data frame into the `symbolic_tbl` class used by `RSDA` involves several steps. We illustrate with the `mushroom` dataset, which contains 23 species described by 3 interval-valued variables and 2 categorical variables.
+
+```{r}
+data(mushroom)
+head(mushroom, 3)
+```
+
+First, use `set_variable_format()` to create pseudo-variables for each category using one-hot encoding:
+
+```{r}
+mushroom_set <- set_variable_format(data = mushroom, location = 8,
+                                    var = "Species")
+head(mushroom_set, 3)
+```
+
+Next, apply `RSDA_format()` to prefix each variable with `$I` (interval) or `$S` (set) tags:
+
+```{r}
+mushroom_tmp <- RSDA_format(data = mushroom_set,
+                            sym_type1 = c("I", "I", "I", "S"),
+                            location = c(25, 27, 29, 31),
+                            sym_type2 = c("S"),
+                            var = c("Species"))
+head(mushroom_tmp, 3)
+```
+
+Clean up variable names with `clean_colnames()` and write to CSV with `write_csv_table()`:
+
+```{r}
+mushroom_clean <- clean_colnames(data = mushroom_tmp)
+head(mushroom_clean, 3)
+```
+
+```{r}
+write_csv_table(data = mushroom_clean, file = "mushroom_interval.csv")
+mushroom_int <- read.sym.table(file = "mushroom_interval.csv",
+                               header = TRUE, sep = ";", dec = ".",
+                               row.names = 1)
+head(mushroom_int, 3)
+class(mushroom_int)
+```
+
+```{r include=FALSE}
+file.remove("mushroom_interval.csv")
+```
+
+Note: The `MM_to_RSDA()` function provides a simpler one-step alternative to this workflow.
+
+
+## Histogram data: the MatH class
+
+Histogram-valued data uses the `MatH` class from the `HistDAWass` package. The built-in `BLOOD` dataset is a `MatH` object with 14 patient groups and 3 distributional variables:
+
+```{r}
+BLOOD[1:3, 1:2]
+```
+
+Below we illustrate constructing a `MatH` object from raw histogram data:
+
+```{r}
+A1 <- c(50, 60, 70, 80, 90, 100, 110, 120)
+B1 <- c(0.00, 0.02, 0.08, 0.32, 0.62, 0.86, 0.92, 1.00)
+A2 <- c(50, 60, 70, 80, 90, 100, 110, 120)
+B2 <- c(0.00, 0.05, 0.12, 0.42, 0.68, 0.88, 0.94, 1.00)
+A3 <- c(50, 60, 70, 80, 90, 100, 110, 120)
+B3 <- c(0.00, 0.03, 0.24, 0.36, 0.75, 0.85, 0.98, 1.00)
+
+ListOfWeight <- list(
+  distributionH(A1, B1),
+  distributionH(A2, B2),
+  distributionH(A3, B3)
+)
+
+Weight <- methods::new("MatH",
+                       nrows = 3, ncols = 1, ListOfDist = ListOfWeight,
+                       names.rows = c("20s", "30s", "40s"),
+                       names.cols = c("weight"), by.row = FALSE)
+Weight
+```
+
+
+# The Eight Interval Methods
+
+Many `dataSDA` functions accept a `method` parameter that determines how interval boundaries are used in computations. The eight available methods (Wu, Kao and Chen, 2020) are:
+
+| Method | Name | Description |
+|:-------|:-----|:------------|
+| **CM** | Center Method | Uses the midpoint (center) of each interval |
+| **VM** | Vertices Method | Uses both endpoints of the intervals |
+| **QM** | Quantile Method | Uses a quantile-based representation |
+| **SE** | Stacked Endpoints Method | Stacks the lower and upper values of an interval |
+| **FV** | Fitted Values Method | Fits a linear regression model |
+| **EJD** | Empirical Joint Density Method | Joint distribution of lower and upper bounds |
+| **GQ** | Symbolic Covariance Method  | Alternative expression of the symbolic sample variance  |
+| **SPT** | Total Sum of Products | Decomposition of the SPT |
+
+Quick demonstration:
+
+```{r}
+data(mushroom.int)
+var_name <- c("Stipe.Length", "Stipe.Thickness")
+int_mean(mushroom.int, var_name, method = c("CM", "FV", "EJD"))
+```
+
+
+# Descriptive Statistics for Interval-Valued Data
+
+The core statistical functions `int_mean`, `int_var`, `int_cov`, and `int_cor` compute descriptive statistics for interval-valued data across any combination of the eight methods.
+
+## Mean and variance
+
+```{r}
+data(mushroom.int)
+
+# Mean of a single variable (default method = "CM")
+int_mean(mushroom.int, var_name = "Pileus.Cap.Width")
+
+# Mean with multiple variables and methods
+var_name <- c("Stipe.Length", "Stipe.Thickness")
+method <- c("CM", "FV", "EJD")
+int_mean(mushroom.int, var_name, method)
+
+# Variance
+int_var(mushroom.int, var_name, method)
+```
+
+## Covariance and correlation
+
+Note: EJD, GQ, and SPT methods require character variable names (not numeric indices).
+
+```{r}
+var_name1 <- "Pileus.Cap.Width"
+var_name2 <- c("Stipe.Length", "Stipe.Thickness")
+method <- c("CM", "VM", "QM", "SE", "FV", "EJD", "GQ", "SPT")
+
+int_cov(mushroom.int, var_name1, var_name2, method)
+int_cor(mushroom.int, var_name1, var_name2, method)
+```
+
+
+# Geometric Properties
+
+Geometric functions characterize the shape and spatial properties of individual intervals and relationships between interval variables.
+
+## Width, radius, center, and midrange
+
+```{r}
+data(mushroom.int)
+
+# Width = upper - lower
+head(int_width(mushroom.int, "Stipe.Length"))
+
+# Radius = width / 2
+head(int_radius(mushroom.int, "Stipe.Length"))
+
+# Center = (lower + upper) / 2
+head(int_center(mushroom.int, "Stipe.Length"))
+
+# Midrange
+head(int_midrange(mushroom.int, "Stipe.Length"))
+```
+
+## Overlap and containment
+
+These functions measure the degree to which intervals from two variables overlap or contain each other, observation by observation:
+
+```{r}
+# Overlap between two interval variables
+head(int_overlap(mushroom.int, "Stipe.Length", "Stipe.Thickness"))
+
+# Containment: proportion of var_name2 contained within var_name1
+head(int_containment(mushroom.int, "Stipe.Length", "Stipe.Thickness"))
+```
+
+
+# Position and Scale Measures
+
+## Median and quantiles
+
+```{r}
+data(mushroom.int)
+
+# Median (default method = "CM")
+int_median(mushroom.int, "Stipe.Length")
+
+# Quantiles
+int_quantile(mushroom.int, "Stipe.Length", probs = c(0.25, 0.5, 0.75))
+
+# Compare median across methods
+int_median(mushroom.int, "Stipe.Length", method = c("CM", "FV"))
+```
+
+## Range, IQR, MAD, and mode
+
+```{r}
+# Range (max - min)
+int_range(mushroom.int, "Stipe.Length")
+
+# Interquartile range (Q3 - Q1)
+int_iqr(mushroom.int, "Stipe.Length")
+
+# Median absolute deviation
+int_mad(mushroom.int, "Stipe.Length")
+
+# Mode (histogram-based estimation)
+int_mode(mushroom.int, "Stipe.Length")
+```
+
+
+# Robust Statistics
+
+Robust statistics reduce the influence of outliers by trimming or winsorizing extreme values.
+
+## Trimmed and winsorized means
+
+```{r}
+data(mushroom.int)
+
+# Compare standard mean vs trimmed mean (10% trim)
+int_mean(mushroom.int, "Stipe.Length", method = "CM")
+int_trimmed_mean(mushroom.int, "Stipe.Length", trim = 0.1, method = "CM")
+
+# Winsorized mean: extreme values are replaced (not removed)
+int_winsorized_mean(mushroom.int, "Stipe.Length", trim = 0.1, method = "CM")
+```
+
+## Trimmed and winsorized variances
+
+```{r}
+int_var(mushroom.int, "Stipe.Length", method = "CM")
+int_trimmed_var(mushroom.int, "Stipe.Length", trim = 0.1, method = "CM")
+int_winsorized_var(mushroom.int, "Stipe.Length", trim = 0.1, method = "CM")
+```
+
+
+# Distribution Shape
+
+Shape functions characterize the distribution of interval-valued data.
+
+```{r}
+data(mushroom.int)
+
+# Skewness: asymmetry of the distribution
+int_skewness(mushroom.int, "Stipe.Length", method = "CM")
+
+# Kurtosis: tail heaviness
+int_kurtosis(mushroom.int, "Stipe.Length", method = "CM")
+
+# Symmetry coefficient
+int_symmetry(mushroom.int, "Stipe.Length", method = "CM")
+
+# Tailedness (related to kurtosis)
+int_tailedness(mushroom.int, "Stipe.Length", method = "CM")
+```
+
+
+# Similarity Measures
+
+Similarity functions quantify how alike two interval variables are across all observations. Available measures include Jaccard, Dice, cosine, and overlap coefficient.
+
+```{r}
+data(mushroom.int)
+
+int_jaccard(mushroom.int, "Stipe.Length", "Stipe.Thickness")
+int_dice(mushroom.int, "Stipe.Length", "Stipe.Thickness")
+int_cosine(mushroom.int, "Stipe.Length", "Stipe.Thickness")
+int_overlap_coefficient(mushroom.int, "Stipe.Length", "Stipe.Thickness")
+```
+
+Note: `int_tanimoto()` is equivalent to `int_jaccard()` for interval-valued data:
+
+```{r}
+int_tanimoto(mushroom.int, "Stipe.Length", "Stipe.Thickness")
+```
+
+The `int_similarity_matrix()` function computes a pairwise similarity matrix across all interval variables:
+
+```{r}
+int_similarity_matrix(mushroom.int, method = "jaccard")
+```
+
+
+# Uncertainty and Variability
+
+These functions measure the uncertainty, variability, and information content of interval-valued data.
+
+## Entropy, CV, and dispersion
+
+```{r}
+data(mushroom.int)
+
+# Shannon entropy (higher = more uncertainty)
+int_entropy(mushroom.int, "Stipe.Length", method = "CM")
+
+# Coefficient of variation (SD / mean)
+int_cv(mushroom.int, "Stipe.Length", method = "CM")
+
+# Dispersion index
+int_dispersion(mushroom.int, "Stipe.Length", method = "CM")
+```
+
+## Imprecision, granularity, uniformity, and information content
+
+```{r}
+# Imprecision: based on interval widths
+int_imprecision(mushroom.int, "Stipe.Length")
+
+# Granularity: variability in interval sizes
+int_granularity(mushroom.int, "Stipe.Length")
+
+# Uniformity: inverse of granularity (higher = more uniform)
+int_uniformity(mushroom.int, "Stipe.Length")
+
+# Normalized information content (between 0 and 1)
+int_information_content(mushroom.int, "Stipe.Length", method = "CM")
+```
+
+
+# Distance Measures
+
+Distance functions compute dissimilarity between observations in interval-valued datasets. Available methods include: euclidean, hausdorff, ichino, de_carvalho, and others.
+
+We use the interval columns of `car.int` for distance examples (excluding the character `Car` column):
+
+```{r}
+data(car.int)
+car_num <- car.int[, 2:5]
+head(car_num, 3)
+```
+
+## Single distance method
+
+```{r}
+# Euclidean distance between observations
+int_dist(car_num, method = "euclidean")
+```
+
+## Distance matrix
+
+```{r}
+# Return as a full matrix
+dm <- int_dist_matrix(car_num, method = "hausdorff")
+dm[1:5, 1:5]
+```
+
+## Pairwise distance between variables
+
+```{r}
+int_pairwise_dist(car_num, "Price", "Max_Velocity", method = "euclidean")
+```
+
+## All distance methods at once
+
+```{r}
+all_dists <- int_dist_all(car_num)
+names(all_dists)
+```
+
+
+# Descriptive Statistics for Histogram-Valued Data
+
+The `hist_mean`, `hist_var`, `hist_cov`, and `hist_cor` functions compute descriptive statistics for histogram-valued data (`MatH` objects).
+
+```{r}
+# Mean and variance with BG method (default)
+hist_mean(BLOOD, "Cholesterol")
+hist_var(BLOOD, "Cholesterol")
+
+# L2W method
+hist_mean(BLOOD, "Cholesterol", method = "L2W")
+hist_var(BLOOD, "Cholesterol", method = "L2W")
+```
+
+```{r}
+# Covariance and correlation
+hist_cov(BLOOD, "Cholesterol", "Hemoglobin", method = "B")
+hist_cor(BLOOD, "Cholesterol", "Hemoglobin", method = "L2W")
+```
+
+
+# Symbolic Dataset Donation/Submission Guidelines
+
+We welcome contributions of high-quality datasets for symbolic data analysis. Submitted datasets will be made publicly available (or under specified constraints) to support research in machine learning, statistics, and related fields. You can submit the related files via email to [wuhm@g.nccu.edu.tw](mailto:wuhm@g.nccu.edu.tw) or through the Google Form at [Symbolic Dataset Submission Form](https://forms.gle/AB6UCsNkrTzqDTp97). The submission requirements are as follows.
+
+1. **Dataset Format**:
+   - Preferred formats: `.csv`, `.xlsx`, or any symbolic format in plain text.
+   - Compressed (`.zip` or `.gz`) if multiple files are included.
+
+2. **Required Metadata**:
+   Contributors must provide the following details:
+
+   | **Field**               | **Description**                                                                 | **Example** |
+   |-------------------------|---------------------------------------------------------------------------------|-------------|
+   | **Dataset Name**        | A clear, descriptive title.                                                    | "face recognition data" |
+   | **Dataset Short Name**        | A clear,abbreviation title.                                                    | "face data" |
+   | **Authors**             | Full names of donator.                                                        | "First name, Last name" |
+   | **E-mail**             | Contact email.                                                        | "abc123@gmail.com" |
+   | **Institutes**          | Affiliated organizations.                                                      | "-" |
+   | **Country**             | Origin of the dataset.                                                         | "France" |
+   | **Dataset Descriptions**        | Data descriptive                                                    | See 'README' |
+   | **Sample Size**         | Number of instances/rows.                                                      | 27 |
+   | **Number of Variables**  | Total features/columns (categorical/numeric).                                  | 6 (interval) |
+   | **Missing Values**       | Indicate if missing values exist and how they are handled.                      | "None" / "Yes, marked as NA" |
+   | **Variable Descriptions**| Detailed description of each column (name, type, units, range).               | See 'README' |
+   | **Source**              | Original data source (if applicable).                                          | "Leroy et al. (1996)" |
+   | **References**          | Citations for prior work using the dataset.                                    | "Douzal-Chouakria, Billard, and Diday (2011)" |
+   | **Applied Areas**       | Relevant fields (e.g., biology, finance).                                      | "Machine Learning" |
+   | **Usage Constraints**   | Licensing (CC-BY, MIT) or restrictions.                                        | "Public domain" |
+   | **Data Link**           | URL to download the dataset (Google Drive, GitHub, etc.).                      | "(https)" |
+
+3. **Quality Assurance**:
+   - Datasets should be **clean** (no sensitive/private data).
+
+4. **Optional (Recommended)**:
+   - A companion `README` file with:
+     - Dataset background.
+     - Suggested use cases.
+     - Known limitations.
+
+
+# Citation
+
+Po-Wei Chen, Chun-houh Chen, Han-Ming Wu (2026), dataSDA: datasets and basic statistics for symbolic data analysis in R (v0.1.8). Technical report.

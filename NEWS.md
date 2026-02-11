@@ -1,0 +1,110 @@
+# dataSDA 0.1.8
+
+## Vignette
+
+- Comprehensive rewrite covering all 51 exported functions (was 18), organized into 14 sections: format detection/conversion, core stats, geometry, position, robust, shape, similarity, uncertainty, distance, histogram stats, and utilities.
+- Fixed garbled characters, stale dataset references, and broken histogram example code.
+
+# dataSDA 0.1.7
+
+## New functions (2 exported)
+
+- `MM_to_RSDA()` — convert MM format (`_min`/`_max` columns) to RSDA format (`symbolic_tbl` with complex-encoded intervals).
+- `iGAP_to_RSDA()` — convert iGAP format to RSDA format via `iGAP_to_MM` → `MM_to_RSDA`.
+
+## Updated functions
+
+- `int_list_conversions()` now returns 8 conversions (was 6), including `MM_to_RSDA` and `iGAP_to_RSDA`.
+- `int_convert_format()` now supports `to = "RSDA"` for MM and iGAP sources with auto-detection.
+
+## Vignette
+
+- Comprehensive rewrite covering all 51 exported functions (was 18), organized into 14 sections: format detection/conversion, core stats, geometry, position, robust, shape, similarity, uncertainty, distance, histogram stats, and utilities.
+- Fixed garbled characters, stale dataset references, and broken histogram example code.
+
+## Tests
+
+- 49 new tests for the new conversion functions and updated conversion registry (517 total, all passing).
+
+# dataSDA 0.1.6
+
+## Dataset naming convention
+
+Adopted snake_case naming with type suffixes (`.int`, `.hist`, `.mix`, `.distr`, `.iGAP`) for all datasets. Renamed 10 existing datasets:
+
+| Old name | New name |
+|---|---|
+| `Abalone` | `abalone.int` |
+| `Abalone.iGAP` | `abalone.iGAP` |
+| `Cars.int` | `cars.int` |
+| `ChinaTemp.int` | `china_temp.int` |
+| `Face.iGAP` | `face.iGAP` |
+| `LoansbyPurpose.int` | `loans_by_purpose.int` |
+| `bird.int` | `bird.mix` |
+| `soccer.bivar.int` | `soccer_bivar.int` |
+| `airline_flights` | `airline_flights.hist` |
+| `health_insurance` | `health_insurance.mix` |
+
+## New datasets (16 added, 48 total)
+
+- `acid_rain.int`, `bats.int`, `credit_card.int`, `employment.int`, `oils.int`, `teams.int`, `tennis.int`, `temperature_city.int`, `trivial_intervals.int`, `world_cup.int` (interval-valued)
+- `bird_species.mix`, `bird_species_extended.mix`, `town_services.mix` (mixed symbolic)
+- `lung_cancer.hist` (histogram-valued)
+- `energy_consumption.distr` (distribution-valued)
+- `bank_rates`, `mushroom_fuzzy` (other)
+
+## New functions (3 exported)
+
+- **Format detection and conversion** (`interval_format_conversions.R`):
+  - `int_detect_format()` — automatically detect interval data format (RSDA, MM, iGAP, SODAS).
+  - `int_list_conversions()` — list available format conversion functions, with optional filtering by source/target format.
+  - `int_convert_format()` — unified interface for all interval format conversions with auto-detection.
+
+## Other changes
+
+- Updated vignette, examples, and tests to use new dataset names.
+- 70 new tests for format detection and conversion helpers (468 total, all passing).
+- `R CMD check`: 0 errors, 0 warnings, 0 notes.
+
+# dataSDA 0.1.5
+
+## New functions (31 exported)
+
+- **Interval distances** (`interval_dist.R`): `int_dist()`, `int_dist_matrix()`, `int_pairwise_dist()`, `int_dist_all()` — 14 distance measures (GD, IY, L1, L2, CB, HD, EHD, nEHD, snEHD, TD, WD, minkowski, ichino, de_carvalho) with method aliases (euclidean, hausdorff, manhattan, city_block, wasserstein).
+- **Interval geometry** (`interval_geometry.R`): `int_width()`, `int_radius()`, `int_center()`, `int_overlap()`, `int_containment()`, `int_midrange()`.
+- **Position and scale** (`interval_position.R`): `int_median()`, `int_quantile()`, `int_range()`, `int_iqr()`, `int_mad()`, `int_mode()` — all support 8 methods (CM, VM, QM, SE, FV, EJD, GQ, SPT).
+- **Robust statistics** (`interval_robust.R`): `int_trimmed_mean()`, `int_winsorized_mean()`, `int_trimmed_var()`, `int_winsorized_var()`.
+- **Distribution shape** (`interval_shape.R`): `int_skewness()`, `int_kurtosis()`, `int_symmetry()`, `int_tailedness()`.
+- **Similarity measures** (`interval_similarity.R`): `int_jaccard()`, `int_dice()`, `int_cosine()`, `int_overlap_coefficient()`, `int_tanimoto()`, `int_similarity_matrix()`.
+- **Uncertainty and variability** (`interval_uncertainty.R`): `int_entropy()`, `int_cv()`, `int_dispersion()`, `int_imprecision()`, `int_granularity()`, `int_uniformity()`, `int_information_content()`.
+
+## Refactoring
+
+- Merged 6 interval conversion files into a single `R/interval_format_conversions.R`, organized by target format.
+- Extracted shared internal helpers, reducing ~454 lines of duplicated code.
+- `R/interval_utils.R`: consolidated 7 internal interval helpers, format-preparation functions (`RSDA_format`, `set_variable_format`, `clean_colnames`), and their internal helpers.
+- `R/histogram_utils.R`: 8 internal helpers for histogram statistics.
+- Renamed `utils_validation.R` to `validation.R`.
+- `R CMD check`: 0 errors, 0 warnings, 0 notes. All 399 tests pass.
+
+# dataSDA 0.1.4
+
+- Input validation for all 18 exported functions: every function now validates its inputs at entry, producing clear error messages instead of cryptic R internals errors.
+- New `R/utils_validation.R`: 11 internal validation helpers centralizing all checks.
+- `RSDA_format` fix: replaced 4 `return("Error")` with proper `stop()` calls.
+- 62 new regression tests for input validation (399 total, all passing).
+- `R CMD check`: 0 errors, 0 warnings.
+- Added `NEWS.md` with changelog for all versions.
+
+# dataSDA 0.1.3
+
+- Added testthat framework with 337 tests covering all 18 exported functions.
+- 0 failures, 0 warnings, 0 skips.
+
+# dataSDA 0.1.2
+
+- 18 exported functions for symbolic data format conversion and statistics.
+- 32 datasets (interval-valued and histogram-valued) for symbolic data analysis.
+- Support for MM, iGAP, RSDA, and SODAS data formats.
+- Interval statistics: `int_mean`, `int_var`, `int_cov`, `int_cor` (8 methods).
+- Histogram statistics: `hist_mean`, `hist_var`, `hist_cov`, `hist_cor`.
