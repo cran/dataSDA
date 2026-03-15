@@ -5,11 +5,13 @@
 \alias{bird_species.mix}
 \title{Bird Species Mixed Symbolic Dataset}
 \format{
-A data frame with 3 observations and 3 symbolic variables:
+A data frame with 3 observations (Swallow, Ostrich, Penguin) and
+5 variables:
 \itemize{
-    \item \code{flying}: Flying ability (Yes/No), categorical.
-    \item \code{size}: Size range as interval (cm).
-    \item \code{migration}: Migratory behavior, categorical.
+    \item \code{species}: Species name (character).
+    \item \code{flying}: Flying ability (Yes/No, character).
+    \item \code{size_l}, \code{size_u}: Size range (cm, Min-Max pair).
+    \item \code{migration}: Migratory behavior (TRUE/FALSE, logical).
 }
 }
 \usage{
@@ -20,6 +22,17 @@ Symbolic data for 3 bird species (Swallow, Ostrich, Penguin) with
 interval-valued size, categorical flying, and categorical migration.
 Foundational SDA example from 600 individual bird observations.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 3 \cr
+  \strong{Variables (p)} \tab 5 \cr
+  \strong{Subject area} \tab Zoology \cr
+  \strong{Symbolic format} \tab Mixed (interval, categorical) \cr
+  \strong{Analytical tasks} \tab Descriptive statistics
+}
+}
+
 \examples{
 data(bird_species.mix)
 }

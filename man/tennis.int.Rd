@@ -5,12 +5,13 @@
 \alias{tennis.int}
 \title{Tennis Court Types Interval Dataset}
 \format{
-A data frame with 4 observations and 4 variables:
+A data frame with 4 observations and 7 columns (3 interval variables
+in \code{_l}/\code{_u} Min-Max pairs, plus a label):
 \itemize{
     \item \code{court_type}: Type of court (Hard, Grass, Indoor, Clay).
-    \item \code{player_weight}: Player weight range (kg).
-    \item \code{player_height}: Player height range (m).
-    \item \code{racket_tension}: Racket tension range.
+    \item \code{player_weight_l}, \code{player_weight_u}: Player weight range (kg).
+    \item \code{player_height_l}, \code{player_height_u}: Player height range (m).
+    \item \code{racket_tension_l}, \code{racket_tension_u}: Racket tension range.
 }
 }
 \usage{
@@ -25,6 +26,17 @@ Clustering on weight and height separates grass courts from the rest
 (decision rule: Weight <= 74.75 kg). When all three variables are used,
 clustering separates by racket tension instead.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 4 \cr
+  \strong{Variables (p)} \tab 7 \cr
+  \strong{Subject area} \tab Sports \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Clustering
+}
+}
+
 \examples{
 data(tennis.int)
 }

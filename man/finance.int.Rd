@@ -5,7 +5,16 @@
 \alias{finance.int}
 \title{Finance Sector Interval Dataset}
 \format{
-An object of class \code{symbolic_tbl} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 14 rows and 7 columns.
+A symbolic data frame (\code{symbolic_tbl}) with 14 observations and 7 variables:
+\itemize{
+    \item \code{Sector}: Business sector name (character).
+    \item \code{Job_Cost}: Job cost range (currency units, interval).
+    \item \code{Job_Code}: Job code range (interval).
+    \item \code{Activity_Code}: Activity code range (interval).
+    \item \code{Monthly_Cost}: Monthly cost range (currency units, interval).
+    \item \code{Annual_Budget}: Annual budget range (currency units, interval).
+    \item \code{n}: Number of entities in the sector (numeric).
+}
 }
 \usage{
 data(finance.int)
@@ -15,6 +24,17 @@ Interval-valued data for 14 business sectors described by job-related
 financial variables (job cost codes, activity codes, budgets).
 Used for PCA demonstrations.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 14 \cr
+  \strong{Variables (p)} \tab 7 \cr
+  \strong{Subject area} \tab Finance \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab PCA
+}
+}
+
 \examples{
 data(finance.int)
 }

@@ -5,8 +5,18 @@
 \alias{temperature_city.int}
 \title{World Cities Monthly Temperature Interval Dataset}
 \format{
-A data frame with city rows and 12 interval-valued monthly
-temperature variables (Jan-Dec), plus an expert class assignment.
+A data frame with 6 observations and 13 columns (6 monthly interval
+variables in \code{_l}/\code{_u} Min-Max pairs, plus a label). Only
+January through June are included:
+\itemize{
+    \item \code{city}: City name (character).
+    \item \code{jan_l}, \code{jan_u}: January temperature range (degrees Celsius).
+    \item \code{feb_l}, \code{feb_u}: February temperature range.
+    \item \code{mar_l}, \code{mar_u}: March temperature range.
+    \item \code{apr_l}, \code{apr_u}: April temperature range.
+    \item \code{may_l}, \code{may_u}: May temperature range.
+    \item \code{jun_l}, \code{jun_u}: June temperature range.
+}
 }
 \usage{
 data(temperature_city.int)
@@ -20,6 +30,17 @@ Wasserstein) in dynamic clustering algorithms.
 Expert partition into 4 classes: Class 1 (tropical/warm), Class 2
 (temperate European and Asian), Class 3 (Mauritius), Class 4 (Tehran).
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 6 \cr
+  \strong{Variables (p)} \tab 13 \cr
+  \strong{Subject area} \tab Climate \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Clustering
+}
+}
+
 \examples{
 data(temperature_city.int)
 }

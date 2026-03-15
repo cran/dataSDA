@@ -4,7 +4,7 @@
 \alias{set_variable_format}
 \title{Set Variable Format}
 \usage{
-set_variable_format(data, location, var)
+set_variable_format(data, location = NULL, var = NULL)
 }
 \arguments{
 \item{data}{A conventional data.}
@@ -21,6 +21,6 @@ This function changes the format of the set variables
 in the data to conform to the RSDA format.
 }
 \examples{
-data("mushroom")
-mushroom.set <- set_variable_format(data = mushroom, location = 8, var = "Species")
+data("mushroom.int.mm")
+mushroom.set <- set_variable_format(data = mushroom.int.mm, location = 8, var = "Species")
 }

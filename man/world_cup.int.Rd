@@ -5,15 +5,34 @@
 \alias{world_cup.int}
 \title{World Cup Soccer Teams Interval Dataset}
 \format{
-A data frame with 2 observations and 5 variables.
+A data frame with 2 observations and 8 variables:
+\itemize{
+    \item \code{world_cup}: Qualification status (yes/no, character).
+    \item \code{age_l}, \code{age_u}: Player age range (years).
+    \item \code{weight_l}, \code{weight_u}: Player weight range (kg).
+    \item \code{height_l}, \code{height_u}: Player height range (meters).
+    \item \code{cov_weight_height}: Covariance between weight and height (numeric).
+}
 }
 \usage{
 data(world_cup.int)
 }
 \description{
 Interval-valued data for soccer teams grouped by World Cup qualification
-status. Includes age, weight, height ranges and covariance.
+status (yes/no). Includes age, weight, height ranges and the covariance
+between weight and height.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 2 \cr
+  \strong{Variables (p)} \tab 8 \cr
+  \strong{Subject area} \tab Sports \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Descriptive statistics
+}
+}
+
 \examples{
 data(world_cup.int)
 }

@@ -5,12 +5,14 @@
 \alias{bats.int}
 \title{Bat Species Interval Dataset}
 \format{
-A data frame with 21 observations and 4 interval-valued variables:
+A data frame with 21 observations and 9 columns (4 interval variables
+in \code{_l}/\code{_u} Min-Max pairs, plus a label):
 \itemize{
-    \item \code{head}: Head length range (mm).
-    \item \code{tail}: Tail length range (mm).
-    \item \code{height}: Ear height range (cm).
-    \item \code{forearm}: Forearm length range (mm).
+    \item \code{species}: Bat species name (character).
+    \item \code{head_l}, \code{head_u}: Head length range (mm).
+    \item \code{tail_l}, \code{tail_u}: Tail length range (mm).
+    \item \code{height_l}, \code{height_u}: Ear height range (cm).
+    \item \code{forearm_l}, \code{forearm_u}: Forearm length range (mm).
 }
 }
 \usage{
@@ -25,6 +27,17 @@ Used to demonstrate color coding schemes, the HCT-R2E seriation
 algorithm, and distance measure comparisons (Gowda-Diday, Hausdorff,
 City-Block, L1, L2, etc.) for interval data.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 21 \cr
+  \strong{Variables (p)} \tab 9 \cr
+  \strong{Subject area} \tab Zoology \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Clustering, Visualization
+}
+}
+
 \examples{
 data(bats.int)
 }

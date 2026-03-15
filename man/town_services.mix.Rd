@@ -5,13 +5,14 @@
 \alias{town_services.mix}
 \title{Town Services Concatenated Mixed Symbolic Dataset}
 \format{
-A data frame with 3 observations and 5 symbolic variables:
+A data frame with 3 observations (Paris, Lyon, Toulouse) and 8 columns:
 \itemize{
-    \item \code{no_pupils}: Number of pupils range (interval).
-    \item \code{type}: School type (modal).
-    \item \code{level}: Coded level (multi-valued).
-    \item \code{no_beds}: Number of beds range (interval).
-    \item \code{specialty}: Specialty code (multi-valued).
+    \item \code{town}: Town name (character).
+    \item \code{no_pupils_l}, \code{no_pupils_u}: Number of pupils range (Min-Max pair).
+    \item \code{type}: School type (modal, character).
+    \item \code{level}: Coded level (multi-valued, character).
+    \item \code{no_beds_l}, \code{no_beds_u}: Number of beds range (Min-Max pair).
+    \item \code{specialty}: Specialty code (multi-valued, character).
 }
 }
 \usage{
@@ -22,6 +23,17 @@ Symbolic data for 3 towns (Paris, Lyon, Toulouse) combining school
 and hospital databases. Contains interval-valued, multi-valued, and
 modal-valued variables.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 3 \cr
+  \strong{Variables (p)} \tab 8 \cr
+  \strong{Subject area} \tab Public services \cr
+  \strong{Symbolic format} \tab Mixed (interval, modal, multi-valued) \cr
+  \strong{Analytical tasks} \tab Descriptive statistics
+}
+}
+
 \examples{
 data(town_services.mix)
 }

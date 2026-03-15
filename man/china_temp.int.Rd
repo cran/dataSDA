@@ -5,7 +5,14 @@
 \alias{china_temp.int}
 \title{China Meteorological Stations Quarterly Temperature Interval Dataset}
 \format{
-A data frame with 899 observations and 5 variables.
+A symbolic data frame (\code{symbolic_tbl}) with 899 observations and 5 variables:
+\itemize{
+    \item \code{Q1}: Quarter 1 (Jan--Mar) temperature range (tenths of degrees Celsius, interval).
+    \item \code{Q2}: Quarter 2 (Apr--Jun) temperature range (interval).
+    \item \code{Q3}: Quarter 3 (Jul--Sep) temperature range (interval).
+    \item \code{Q4}: Quarter 4 (Oct--Dec) temperature range (interval).
+    \item \code{GeoReg}: Geographic region classification (factor).
+}
 }
 \source{
 \url{https://CRAN.R-project.org/package=MAINT.Data}
@@ -24,6 +31,17 @@ People's Republic of China. Widely used in the SDA literature for
 demonstrating standardization, clustering, self-organizing maps,
 MLE and MANOVA.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 899 \cr
+  \strong{Variables (p)} \tab 5 \cr
+  \strong{Subject area} \tab Climate \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Clustering
+}
+}
+
 \examples{
 data(china_temp.int)
 }

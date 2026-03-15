@@ -5,15 +5,60 @@
 \alias{health_insurance.mix}
 \title{Health Insurance Mixed Symbolic Dataset}
 \format{
-An object of class \code{data.frame} with 51 rows and 30 columns.
+A data frame with 51 observations and 30 variables (Y1--Y30):
+\itemize{
+    \item \code{Y1}: City (character).
+    \item \code{Y2}: Gender (M/F, character).
+    \item \code{Y3}: Age (integer).
+    \item \code{Y4}: Sex (M/D, character).
+    \item \code{Y5}: Marital status (S/M, character).
+    \item \code{Y6}: Number of dependents (integer).
+    \item \code{Y7}: Parents alive indicator (integer).
+    \item \code{Y8}: Number of children (integer).
+    \item \code{Y9}: Height (cm, integer).
+    \item \code{Y10}: Weight (pounds, integer).
+    \item \code{Y11}: Systolic blood pressure (mmHg, integer).
+    \item \code{Y12}: Diastolic blood pressure (mmHg, integer).
+    \item \code{Y13}: Cholesterol (mg/dL, integer).
+    \item \code{Y14}: Cholesterol measure 2 (integer).
+    \item \code{Y15}: Additional lab measurement (integer).
+    \item \code{Y16}: Ratio measurement (numeric).
+    \item \code{Y17}: Lab value (integer).
+    \item \code{Y18}: Lab value (integer).
+    \item \code{Y19}: Lab value (integer).
+    \item \code{Y20}: Lab ratio (numeric).
+    \item \code{Y21}: Additional lab value (integer).
+    \item \code{Y22}: Additional lab value (integer).
+    \item \code{Y23}: Blood chemistry value (numeric).
+    \item \code{Y24}: Blood chemistry value (numeric).
+    \item \code{Y25}: Blood chemistry value (numeric).
+    \item \code{Y26}: Blood chemistry value (numeric).
+    \item \code{Y27}: Blood chemistry value (numeric).
+    \item \code{Y28}: Diagnostic indicator (Y/N, character).
+    \item \code{Y29}: Diagnostic indicator (Y/N, character).
+    \item \code{Y30}: Count variable (integer).
+}
 }
 \usage{
 data(health_insurance.mix)
 }
 \description{
-Health insurance data grouped by disease type and gender with
-classical and symbolic variables of mixed types.
+Classical (microdata) health insurance dataset of 51 individual patient
+records with 30 variables including demographics, clinical measurements,
+and diagnostic indicators. This is the raw data underlying the
+symbolic \code{\link{health_insurance2.modal}} dataset.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 51 \cr
+  \strong{Variables (p)} \tab 30 \cr
+  \strong{Subject area} \tab Medical \cr
+  \strong{Symbolic format} \tab Classical (microdata) \cr
+  \strong{Analytical tasks} \tab Descriptive statistics, Aggregation
+}
+}
+
 \examples{
 data(health_insurance.mix)
 }

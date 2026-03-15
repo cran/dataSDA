@@ -5,14 +5,31 @@
 \alias{baseball.int}
 \title{Baseball Teams Interval Dataset}
 \format{
-An object of class \code{symbolic_tbl} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 19 rows and 3 columns.
+A symbolic data frame (\code{symbolic_tbl}) with 19 observations and 3 variables:
+\itemize{
+    \item \code{At_Bats}: Range of at-bats across players (interval).
+    \item \code{Hits}: Range of hits across players (interval).
+    \item \code{Pattern}: Team performance pattern code (character).
+}
 }
 \usage{
 data(baseball.int)
 }
 \description{
-Interval-valued data for baseball teams with player statistics.
+Interval-valued data for 19 baseball teams with aggregated player
+batting statistics and a pattern variable classifying team performance.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 19 \cr
+  \strong{Variables (p)} \tab 3 \cr
+  \strong{Subject area} \tab Sports \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Descriptive statistics, Clustering
+}
+}
+
 \examples{
 data(baseball.int)
 }

@@ -5,7 +5,14 @@
 \alias{cars.int}
 \title{Cars Interval Dataset}
 \format{
-A data frame with 27 observations and 5 variables.
+A symbolic data frame (\code{symbolic_tbl}) with 27 observations and 5 variables:
+\itemize{
+    \item \code{Price}: Price range (interval).
+    \item \code{EngCap}: Engine capacity range (cc, interval).
+    \item \code{TopSpeed}: Top speed range (km/h, interval).
+    \item \code{Acceleration}: Acceleration range (seconds 0--100 km/h, interval).
+    \item \code{class}: Car class (Utilitarian, Berlina, Sportive, Luxury; set-valued).
+}
 }
 \source{
 \url{https://CRAN.R-project.org/package=MAINT.Data}
@@ -18,6 +25,17 @@ Interval-valued data for 27 car models classified into four classes
 (Utilitarian, Berlina, Sportive, Luxury), described by Price,
 EngineCapacity, TopSpeed and Acceleration intervals.
 }
+\section{Metadata}{
+
+\tabular{ll}{
+  \strong{Sample size (n)} \tab 27 \cr
+  \strong{Variables (p)} \tab 5 \cr
+  \strong{Subject area} \tab Automotive \cr
+  \strong{Symbolic format} \tab Interval \cr
+  \strong{Analytical tasks} \tab Classification
+}
+}
+
 \examples{
 data(cars.int)
 }
