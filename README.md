@@ -4,7 +4,7 @@
 
 [![R](https://img.shields.io/badge/R-%3E%3D%204.0.0-blue)](https://www.r-project.org/)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/version-0.2.5-green.svg)](https://github.com/hanmingwu1103/dataSDA/releases/tag/v0.2.5)
+[![Version](https://img.shields.io/badge/version-0.2.6-green.svg)](https://github.com/hanmingwu1103/dataSDA/releases/tag/v0.2.6)
 
 ## Overview
 
@@ -25,10 +25,10 @@ Download the latest release from the [Releases](https://github.com/hanmingwu1103
 
 ```r
 # Source package (all platforms)
-install.packages("dataSDA_0.2.5.tar.gz", repos = NULL, type = "source")
+install.packages("dataSDA_0.2.6.tar.gz", repos = NULL, type = "source")
 
 # Binary package (Windows)
-install.packages("dataSDA_0.2.5.zip", repos = NULL, type = "win.binary")
+install.packages("dataSDA_0.2.6.zip", repos = NULL, type = "win.binary")
 ```
 
 ## Features
@@ -157,6 +157,7 @@ hist_cor(HistDAWass::BLOOD, var_name1 = "Cholesterol",
 | Function | Description |
 |---|---|
 | `clean_colnames` | Clean column names of a data frame |
+| `check_zero_width_intervals` | Flag zero-width intervals (`min == max`) in interval-valued data |
 | `read_symbolic_csv` | Read symbolic data from CSV file |
 | `write_symbolic_csv` | Write symbolic data to CSV file |
 | `search_data` | Search available datasets by keyword or type |
@@ -200,7 +201,7 @@ The package includes **114 built-in datasets** for symbolic data analysis:
 
 ## Vignettes
 
-- [Introduction to dataSDA](https://htmlpreview.github.io/?https://github.com/hanmingwu1103/dataSDA/blob/master/inst/doc/dataSDA_intro.html)
+- [Introduction to dataSDA](https://htmlpreview.github.io/?https://github.com/hanmingwu1103/dataSDA/blob/master/docs/dataSDA_intro.html)
 
 ## Dependencies
 
@@ -215,3 +216,7 @@ The package includes **114 built-in datasets** for symbolic data analysis:
 ## License
 
 GPL (>= 2)
+
+## Citation
+
+Po-Wei Chen, Chun-houh Chen, Han-Ming Wu (2026), dataSDA: datasets and basic statistics for symbolic data analysis in R (v0.2.6). Journal of Applied Statistics.

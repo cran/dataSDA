@@ -5,13 +5,17 @@
 \alias{environment.mix}
 \title{EPA Environmental Data Mixed Symbolic Dataset}
 \format{
-A symbolic data frame (\code{symbolic_tbl}) with 14 observations and
-17 variables:
+A symbolic data frame (\code{symbolic_tbl}, of class
+\code{c("symbolic_tbl", "tbl_df", "tbl", "data.frame")}) with 14
+observations and 17 variables. The first four are modal-valued
+(\code{symbolic_modal}) variables and the remaining thirteen are
+interval-valued (\code{symbolic_interval}) variables. This matches the
+structure of \code{ggInterval::Environment}.
 \itemize{
-    \item \code{URBANICITY}: Modal-valued urbanicity distribution (character).
-    \item \code{INCOMELEVEL}: Modal-valued income level distribution (character).
-    \item \code{EDUCATION}: Modal-valued education distribution (character).
-    \item \code{REGIONDEVELOPME}: Modal-valued regional development distribution (character).
+    \item \code{URBANICITY}: Modal-valued urbanicity distribution (modal).
+    \item \code{INCOMELEVEL}: Modal-valued income level distribution (modal).
+    \item \code{EDUCATION}: Modal-valued education distribution (modal).
+    \item \code{REGIONDEVELOPME}: Modal-valued regional development distribution (modal).
     \item \code{CONTROL}: Environmental control index range (interval).
     \item \code{SATISFY}: Satisfaction index range (interval).
     \item \code{INDIVIDUAL}: Individual concern index range (interval).
@@ -28,7 +32,7 @@ A symbolic data frame (\code{symbolic_tbl}) with 14 observations and
 }
 }
 \source{
-Extracted from ggESDA package (\code{Environment}).
+Extracted from the ggInterval package (\code{Environment}).
 }
 \usage{
 data(environment.mix)
@@ -53,8 +57,9 @@ and modal-valued (distributional) categorical variables.
 data(environment.mix)
 }
 \references{
-Sun, Y. and Billard, L. (2020). Symbolic data analysis with the
-ggESDA package. \emph{Journal of Statistical Software}.
+Jiang, B.-S. and Wu, H.-M. (2025). ggInterval: an R package for
+visualizing interval-valued data using ggplot2. R package version 0.2.5.
+\url{https://CRAN.R-project.org/package=ggInterval}
 }
 \keyword{datasets}
 \keyword{interval}

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Po-Wei Chen, Chun-houh Chen and Han-Ming Wu*" />
 
-<meta name="date" content="2026-03-14" />
+<meta name="date" content="2026-06-11" />
 
 <title>Introduction to dataSDA</title>
 
@@ -340,10 +340,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">Introduction to dataSDA</h1>
-<h3 class="subtitle">Datasets and Basic Statistics for Symbolic Data
-Analysis</h3>
+<h3 class="subtitle">Supplementary material for dataSDA: datasets and
+basic statistics for symbolic data analysis in R</h3>
 <h4 class="author">Po-Wei Chen, Chun-houh Chen and Han-Ming Wu*</h4>
-<h4 class="date">March 14, 2026</h4>
+<h4 class="date">June 11, 2026</h4>
 
 
 <div id="TOC">
@@ -442,7 +442,7 @@ Donation/Submission Guidelines</a></li>
 
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>The <code>dataSDA</code> package (v0.3.0) gathers various symbolic
+<p>The <code>dataSDA</code> package (v0.2.6) gathers various symbolic
 data tailored to different research themes and provides a comprehensive
 set of functions for reading, writing, converting, and analyzing
 symbolic data. The package is available on CRAN at <a href="https://CRAN.R-project.org/package=dataSDA" class="uri">https://CRAN.R-project.org/package=dataSDA</a> and on GitHub
@@ -610,8 +610,9 @@ categories:</p>
 <td align="left">Utilities</td>
 <td align="left"><code>clean_colnames</code>, <code>RSDA_format</code>,
 <code>set_variable_format</code>, <code>read_symbolic_csv</code>,
-<code>write_symbolic_csv</code></td>
-<td align="right">5</td>
+<code>write_symbolic_csv</code>,
+<code>check_zero_width_intervals</code></td>
+<td align="right">6</td>
 </tr>
 </tbody>
 </table>
@@ -709,17 +710,21 @@ categorical variables.</p>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">head</span>(mushroom.int.mm, <span class="dv">3</span>)</span></code></pre></div>
 <p>First, use <code>set_variable_format()</code> to create
 pseudo-variables for each category using one-hot encoding:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>mushroom_set <span class="ot">&lt;-</span> <span class="fu">set_variable_format</span>(<span class="at">data =</span> mushroom.int.mm, <span class="at">location =</span> <span class="dv">8</span>,</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>                                    <span class="at">var =</span> <span class="st">&quot;Species&quot;</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">head</span>(mushroom_set, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>mushroom_set <span class="ot">&lt;-</span> <span class="fu">set_variable_format</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">data =</span> mushroom.int.mm, <span class="at">location =</span> <span class="dv">8</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">var =</span> <span class="st">&quot;Species&quot;</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="fu">head</span>(mushroom_set, <span class="dv">3</span>)</span></code></pre></div>
 <p>Next, apply <code>RSDA_format()</code> to prefix each variable with
 <code>$I</code> (interval) or <code>$S</code> (set) tags:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>mushroom_tmp <span class="ot">&lt;-</span> <span class="fu">RSDA_format</span>(<span class="at">data =</span> mushroom_set,</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>                            <span class="at">sym_type1 =</span> <span class="fu">c</span>(<span class="st">&quot;I&quot;</span>, <span class="st">&quot;I&quot;</span>, <span class="st">&quot;I&quot;</span>, <span class="st">&quot;S&quot;</span>),</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>                            <span class="at">location =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">27</span>, <span class="dv">29</span>, <span class="dv">31</span>),</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>                            <span class="at">sym_type2 =</span> <span class="fu">c</span>(<span class="st">&quot;S&quot;</span>),</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>                            <span class="at">var =</span> <span class="fu">c</span>(<span class="st">&quot;Species&quot;</span>))</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="fu">head</span>(mushroom_tmp, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>mushroom_tmp <span class="ot">&lt;-</span> <span class="fu">RSDA_format</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="at">data =</span> mushroom_set,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">sym_type1 =</span> <span class="fu">c</span>(<span class="st">&quot;I&quot;</span>, <span class="st">&quot;I&quot;</span>, <span class="st">&quot;I&quot;</span>, <span class="st">&quot;S&quot;</span>),</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">location =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">27</span>, <span class="dv">29</span>, <span class="dv">31</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">sym_type2 =</span> <span class="fu">c</span>(<span class="st">&quot;S&quot;</span>),</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="at">var =</span> <span class="fu">c</span>(<span class="st">&quot;Species&quot;</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>)</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="fu">head</span>(mushroom_tmp, <span class="dv">3</span>)</span></code></pre></div>
 <p>Clean up variable names with <code>clean_colnames()</code> and write
 to CSV with <code>write_symbolic_csv()</code>:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>mushroom_clean <span class="ot">&lt;-</span> <span class="fu">clean_colnames</span>(<span class="at">data =</span> mushroom_tmp)</span>
@@ -755,10 +760,11 @@ histogram data:</p>
 <span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>)</span>
 <span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a></span>
 <span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>Weight <span class="ot">&lt;-</span> methods<span class="sc">::</span><span class="fu">new</span>(<span class="st">&quot;MatH&quot;</span>,</span>
-<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>                       <span class="at">nrows =</span> <span class="dv">3</span>, <span class="at">ncols =</span> <span class="dv">1</span>, <span class="at">ListOfDist =</span> ListOfWeight,</span>
-<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>                       <span class="at">names.rows =</span> <span class="fu">c</span>(<span class="st">&quot;20s&quot;</span>, <span class="st">&quot;30s&quot;</span>, <span class="st">&quot;40s&quot;</span>),</span>
-<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>                       <span class="at">names.cols =</span> <span class="fu">c</span>(<span class="st">&quot;weight&quot;</span>), <span class="at">by.row =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>Weight</span></code></pre></div>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>  <span class="at">nrows =</span> <span class="dv">3</span>, <span class="at">ncols =</span> <span class="dv">1</span>, <span class="at">ListOfDist =</span> ListOfWeight,</span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>  <span class="at">names.rows =</span> <span class="fu">c</span>(<span class="st">&quot;20s&quot;</span>, <span class="st">&quot;30s&quot;</span>, <span class="st">&quot;40s&quot;</span>),</span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>  <span class="at">names.cols =</span> <span class="fu">c</span>(<span class="st">&quot;weight&quot;</span>), <span class="at">by.row =</span> <span class="cn">FALSE</span></span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>)</span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>Weight</span></code></pre></div>
 </div>
 </div>
 <div id="the-eight-interval-methods" class="section level1" number="3">
@@ -861,20 +867,28 @@ how each method weighs interval width and position.</p>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">6</span>), <span class="at">las =</span> <span class="dv">2</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a></span>
 <span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co"># --- Mean across eight methods ---</span></span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(<span class="fu">t</span>(mean_mat), <span class="at">beside =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> cols,</span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Interval Mean by Method (mushroom.int)&quot;</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">&quot;Mean&quot;</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mean_mat) <span class="sc">*</span> <span class="fl">1.25</span>))</span>
-<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.18</span>, <span class="dv">0</span>),</span>
-<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">colnames</span>(mean_mat), <span class="at">fill =</span> cols, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="at">cex =</span> <span class="fl">0.85</span>)</span>
-<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a></span>
-<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co"># --- Variance across eight methods ---</span></span>
-<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(<span class="fu">t</span>(var_mat), <span class="at">beside =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> cols,</span>
-<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Interval Variance by Method (mushroom.int)&quot;</span>,</span>
-<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">&quot;Variance&quot;</span>,</span>
-<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_mat) <span class="sc">*</span> <span class="fl">1.25</span>))</span>
-<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.18</span>, <span class="dv">0</span>),</span>
-<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">colnames</span>(var_mat), <span class="at">fill =</span> cols, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="at">cex =</span> <span class="fl">0.85</span>)</span></code></pre></div>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(<span class="fu">t</span>(mean_mat),</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="at">beside =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> cols,</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Interval Mean by Method (mushroom.int)&quot;</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Mean&quot;</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mean_mat) <span class="sc">*</span> <span class="fl">1.25</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>)</span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.18</span>, <span class="dv">0</span>),</span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">colnames</span>(mean_mat), <span class="at">fill =</span> cols, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="at">cex =</span> <span class="fl">0.85</span></span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>)</span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="co"># --- Variance across eight methods ---</span></span>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(<span class="fu">t</span>(var_mat),</span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a>  <span class="at">beside =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> cols,</span>
+<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Interval Variance by Method (mushroom.int)&quot;</span>,</span>
+<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Variance&quot;</span>,</span>
+<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_mat) <span class="sc">*</span> <span class="fl">1.25</span>)</span>
+<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a>)</span>
+<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>,</span>
+<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.18</span>, <span class="dv">0</span>),</span>
+<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">colnames</span>(var_mat), <span class="at">fill =</span> cols, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="at">cex =</span> <span class="fl">0.85</span></span>
+<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="covariance-and-correlation" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Covariance and
@@ -890,8 +904,10 @@ variable names (not numeric indices).</p>
 <span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>cov_vec <span class="ot">&lt;-</span> <span class="fu">sapply</span>(cov_list, <span class="cf">function</span>(x) x[<span class="dv">1</span>, <span class="dv">1</span>])</span>
 <span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>cor_vec <span class="ot">&lt;-</span> <span class="fu">sapply</span>(cor_list, <span class="cf">function</span>(x) x[<span class="dv">1</span>, <span class="dv">1</span>])</span>
 <span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a></span>
-<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="fu">names</span>(cov_vec), <span class="at">Covariance =</span> <span class="fu">round</span>(cov_vec, <span class="dv">4</span>),</span>
-<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>           <span class="at">Correlation =</span> <span class="fu">round</span>(cor_vec, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">names</span>(cov_vec), <span class="at">Covariance =</span> <span class="fu">round</span>(cov_vec, <span class="dv">4</span>),</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>  <span class="at">Correlation =</span> <span class="fu">round</span>(cor_vec, <span class="dv">4</span>), <span class="at">row.names =</span> <span class="cn">NULL</span></span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>)</span></code></pre></div>
 <p>The SE method yields the largest covariance because it doubles the
 effective sample by stacking both endpoints, amplifying joint variation.
 VM produces the lowest correlation (0.36) because the vertex expansion
@@ -900,21 +916,27 @@ observation, many of which are non-informative.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>), <span class="at">las =</span> <span class="dv">2</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co"># --- Covariance across eight methods ---</span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>bar_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#4E79A7&quot;</span>, <span class="st">&quot;#59A14F&quot;</span>, <span class="st">&quot;#F28E2B&quot;</span>, <span class="st">&quot;#E15759&quot;</span>,</span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>              <span class="st">&quot;#76B7B2&quot;</span>, <span class="st">&quot;#EDC948&quot;</span>, <span class="st">&quot;#B07AA1&quot;</span>, <span class="st">&quot;#FF9DA7&quot;</span>)</span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cov_vec, <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Cov(Pileus.Cap.Width, Stipe.Length) by Method&quot;</span>,</span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">&quot;Covariance&quot;</span>,</span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(cov_vec) <span class="sc">*</span> <span class="fl">1.25</span>))</span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="fu">text</span>(bp, cov_vec, <span class="at">labels =</span> <span class="fu">round</span>(cov_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a></span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a><span class="co"># --- Correlation across eight methods ---</span></span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cor_vec, <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Cor(Pileus.Cap.Width, Stipe.Length) by Method&quot;</span>,</span>
-<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">&quot;Correlation&quot;</span>,</span>
-<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.15</span>))</span>
-<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a><span class="fu">text</span>(bp, cor_vec, <span class="at">labels =</span> <span class="fu">round</span>(cor_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;grey50&quot;</span>)</span></code></pre></div>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>bar_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>  <span class="st">&quot;#4E79A7&quot;</span>, <span class="st">&quot;#59A14F&quot;</span>, <span class="st">&quot;#F28E2B&quot;</span>, <span class="st">&quot;#E15759&quot;</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>  <span class="st">&quot;#76B7B2&quot;</span>, <span class="st">&quot;#EDC948&quot;</span>, <span class="st">&quot;#B07AA1&quot;</span>, <span class="st">&quot;#FF9DA7&quot;</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>)</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cov_vec,</span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Cov(Pileus.Cap.Width, Stipe.Length) by Method&quot;</span>,</span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Covariance&quot;</span>,</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(cov_vec) <span class="sc">*</span> <span class="fl">1.25</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>)</span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a><span class="fu">text</span>(bp, cov_vec, <span class="at">labels =</span> <span class="fu">round</span>(cov_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="co"># --- Correlation across eight methods ---</span></span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cor_vec,</span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Cor(Pileus.Cap.Width, Stipe.Length) by Method&quot;</span>,</span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Correlation&quot;</span>,</span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.15</span>)</span>
+<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a>)</span>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="fu">text</span>(bp, cor_vec, <span class="at">labels =</span> <span class="fu">round</span>(cor_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;grey50&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="geometric-properties" class="section level1" number="5">
@@ -1155,32 +1177,44 @@ L2W progressively decrease.</p>
 <span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">1</span>), <span class="at">las =</span> <span class="dv">1</span>)</span>
 <span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a></span>
 <span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a><span class="co"># --- Mean: Cholesterol ---</span></span>
-<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ], <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Mean of Cholesterol&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Mean&quot;</span>,</span>
-<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.15</span>))</span>
-<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a><span class="fu">text</span>(bp, mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ],</span>
-<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">round</span>(mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ], <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a></span>
-<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a><span class="co"># --- Mean: Hemoglobin ---</span></span>
-<span id="cb45-12"><a href="#cb45-12" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ], <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb45-13"><a href="#cb45-13" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Mean of Hemoglobin&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Mean&quot;</span>,</span>
-<span id="cb45-14"><a href="#cb45-14" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.15</span>))</span>
-<span id="cb45-15"><a href="#cb45-15" tabindex="-1"></a><span class="fu">text</span>(bp, mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ],</span>
-<span id="cb45-16"><a href="#cb45-16" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">round</span>(mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ], <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb45-17"><a href="#cb45-17" tabindex="-1"></a></span>
-<span id="cb45-18"><a href="#cb45-18" tabindex="-1"></a><span class="co"># --- Variance: Cholesterol ---</span></span>
-<span id="cb45-19"><a href="#cb45-19" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ], <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb45-20"><a href="#cb45-20" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Variance of Cholesterol&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Variance&quot;</span>,</span>
-<span id="cb45-21"><a href="#cb45-21" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.25</span>))</span>
-<span id="cb45-22"><a href="#cb45-22" tabindex="-1"></a><span class="fu">text</span>(bp, var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ],</span>
-<span id="cb45-23"><a href="#cb45-23" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">round</span>(var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ], <span class="dv">1</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb45-24"><a href="#cb45-24" tabindex="-1"></a></span>
-<span id="cb45-25"><a href="#cb45-25" tabindex="-1"></a><span class="co"># --- Variance: Hemoglobin ---</span></span>
-<span id="cb45-26"><a href="#cb45-26" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ], <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb45-27"><a href="#cb45-27" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Variance of Hemoglobin&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Variance&quot;</span>,</span>
-<span id="cb45-28"><a href="#cb45-28" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.25</span>))</span>
-<span id="cb45-29"><a href="#cb45-29" tabindex="-1"></a><span class="fu">text</span>(bp, var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ],</span>
-<span id="cb45-30"><a href="#cb45-30" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">round</span>(var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ], <span class="dv">4</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code></pre></div>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ],</span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Mean of Cholesterol&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Mean&quot;</span>,</span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.15</span>)</span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a>)</span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a><span class="fu">text</span>(bp, mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ],</span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">round</span>(mean_mat[<span class="st">&quot;Cholesterol&quot;</span>, ], <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span></span>
+<span id="cb45-12"><a href="#cb45-12" tabindex="-1"></a>)</span>
+<span id="cb45-13"><a href="#cb45-13" tabindex="-1"></a></span>
+<span id="cb45-14"><a href="#cb45-14" tabindex="-1"></a><span class="co"># --- Mean: Hemoglobin ---</span></span>
+<span id="cb45-15"><a href="#cb45-15" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ],</span>
+<span id="cb45-16"><a href="#cb45-16" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb45-17"><a href="#cb45-17" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Mean of Hemoglobin&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Mean&quot;</span>,</span>
+<span id="cb45-18"><a href="#cb45-18" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.15</span>)</span>
+<span id="cb45-19"><a href="#cb45-19" tabindex="-1"></a>)</span>
+<span id="cb45-20"><a href="#cb45-20" tabindex="-1"></a><span class="fu">text</span>(bp, mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ],</span>
+<span id="cb45-21"><a href="#cb45-21" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">round</span>(mean_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ], <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span></span>
+<span id="cb45-22"><a href="#cb45-22" tabindex="-1"></a>)</span>
+<span id="cb45-23"><a href="#cb45-23" tabindex="-1"></a></span>
+<span id="cb45-24"><a href="#cb45-24" tabindex="-1"></a><span class="co"># --- Variance: Cholesterol ---</span></span>
+<span id="cb45-25"><a href="#cb45-25" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ],</span>
+<span id="cb45-26"><a href="#cb45-26" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb45-27"><a href="#cb45-27" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Variance of Cholesterol&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Variance&quot;</span>,</span>
+<span id="cb45-28"><a href="#cb45-28" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.25</span>)</span>
+<span id="cb45-29"><a href="#cb45-29" tabindex="-1"></a>)</span>
+<span id="cb45-30"><a href="#cb45-30" tabindex="-1"></a><span class="fu">text</span>(bp, var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ],</span>
+<span id="cb45-31"><a href="#cb45-31" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">round</span>(var_mat[<span class="st">&quot;Cholesterol&quot;</span>, ], <span class="dv">1</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span></span>
+<span id="cb45-32"><a href="#cb45-32" tabindex="-1"></a>)</span>
+<span id="cb45-33"><a href="#cb45-33" tabindex="-1"></a></span>
+<span id="cb45-34"><a href="#cb45-34" tabindex="-1"></a><span class="co"># --- Variance: Hemoglobin ---</span></span>
+<span id="cb45-35"><a href="#cb45-35" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ],</span>
+<span id="cb45-36"><a href="#cb45-36" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb45-37"><a href="#cb45-37" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Variance of Hemoglobin&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Variance&quot;</span>,</span>
+<span id="cb45-38"><a href="#cb45-38" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ]) <span class="sc">*</span> <span class="fl">1.25</span>)</span>
+<span id="cb45-39"><a href="#cb45-39" tabindex="-1"></a>)</span>
+<span id="cb45-40"><a href="#cb45-40" tabindex="-1"></a><span class="fu">text</span>(bp, var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ],</span>
+<span id="cb45-41"><a href="#cb45-41" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">round</span>(var_mat[<span class="st">&quot;Hemoglobin&quot;</span>, ], <span class="dv">4</span>), <span class="at">pos =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.8</span></span>
+<span id="cb45-42"><a href="#cb45-42" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="covariance-and-correlation-1" class="section level2" number="12.2">
 <h2><span class="header-section-number">12.2</span> Covariance and
@@ -1188,37 +1222,45 @@ correlation</h2>
 <p>We compute the covariance and correlation between
 <code>Cholesterol</code> and <code>Hemoglobin</code> using all four
 methods.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a>cov_vec <span class="ot">&lt;-</span> <span class="fu">sapply</span>(all_methods, <span class="cf">function</span>(m)</span>
-<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>  <span class="fu">hist_cov</span>(BLOOD, <span class="st">&quot;Cholesterol&quot;</span>, <span class="st">&quot;Hemoglobin&quot;</span>, <span class="at">method =</span> m))</span>
-<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>cor_vec <span class="ot">&lt;-</span> <span class="fu">sapply</span>(all_methods, <span class="cf">function</span>(m)</span>
-<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>  <span class="fu">hist_cor</span>(BLOOD, <span class="st">&quot;Cholesterol&quot;</span>, <span class="st">&quot;Hemoglobin&quot;</span>, <span class="at">method =</span> m))</span>
-<span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a></span>
-<span id="cb46-6"><a href="#cb46-6" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">Method =</span> all_methods,</span>
-<span id="cb46-7"><a href="#cb46-7" tabindex="-1"></a>           <span class="at">Covariance =</span> <span class="fu">round</span>(cov_vec, <span class="dv">4</span>),</span>
-<span id="cb46-8"><a href="#cb46-8" tabindex="-1"></a>           <span class="at">Correlation =</span> <span class="fu">round</span>(cor_vec, <span class="dv">4</span>),</span>
-<span id="cb46-9"><a href="#cb46-9" tabindex="-1"></a>           <span class="at">row.names =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a>cov_vec <span class="ot">&lt;-</span> <span class="fu">sapply</span>(all_methods, <span class="cf">function</span>(m) {</span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>  <span class="fu">hist_cov</span>(BLOOD, <span class="st">&quot;Cholesterol&quot;</span>, <span class="st">&quot;Hemoglobin&quot;</span>, <span class="at">method =</span> m)</span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>})</span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>cor_vec <span class="ot">&lt;-</span> <span class="fu">sapply</span>(all_methods, <span class="cf">function</span>(m) {</span>
+<span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a>  <span class="fu">hist_cor</span>(BLOOD, <span class="st">&quot;Cholesterol&quot;</span>, <span class="st">&quot;Hemoglobin&quot;</span>, <span class="at">method =</span> m)</span>
+<span id="cb46-6"><a href="#cb46-6" tabindex="-1"></a>})</span>
+<span id="cb46-7"><a href="#cb46-7" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb46-9"><a href="#cb46-9" tabindex="-1"></a>  <span class="at">Method =</span> all_methods,</span>
+<span id="cb46-10"><a href="#cb46-10" tabindex="-1"></a>  <span class="at">Covariance =</span> <span class="fu">round</span>(cov_vec, <span class="dv">4</span>),</span>
+<span id="cb46-11"><a href="#cb46-11" tabindex="-1"></a>  <span class="at">Correlation =</span> <span class="fu">round</span>(cor_vec, <span class="dv">4</span>),</span>
+<span id="cb46-12"><a href="#cb46-12" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">NULL</span></span>
+<span id="cb46-13"><a href="#cb46-13" tabindex="-1"></a>)</span></code></pre></div>
 <p>All four methods yield a negative association between Cholesterol and
 Hemoglobin. Following Irpino and Verde (2015, Eqs. 30–32), the BG, BD,
 and B correlations all use the Bertrand-Goupil standard deviation in the
-denominator, so their values are similar (around ???0.20 to ???0.22).
-Only L2W uses its own Wasserstein-based variance, which produces a
-different correlation.</p>
+denominator, so their values are similar (around -0.20 to -0.22). Only
+L2W uses its own Wasserstein-based variance, which produces a different
+correlation.</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">1</span>), <span class="at">las =</span> <span class="dv">1</span>)</span>
 <span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a></span>
 <span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a><span class="co"># --- Covariance ---</span></span>
-<span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cov_vec, <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Cov(Cholesterol, Hemoglobin)&quot;</span>,</span>
-<span id="cb47-6"><a href="#cb47-6" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">&quot;Covariance&quot;</span>,</span>
-<span id="cb47-7"><a href="#cb47-7" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(cov_vec) <span class="sc">*</span> <span class="fl">1.35</span>, <span class="dv">0</span>))</span>
-<span id="cb47-8"><a href="#cb47-8" tabindex="-1"></a><span class="fu">text</span>(bp, cov_vec, <span class="at">labels =</span> <span class="fu">round</span>(cov_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb47-9"><a href="#cb47-9" tabindex="-1"></a></span>
-<span id="cb47-10"><a href="#cb47-10" tabindex="-1"></a><span class="co"># --- Correlation ---</span></span>
-<span id="cb47-11"><a href="#cb47-11" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cor_vec, <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
-<span id="cb47-12"><a href="#cb47-12" tabindex="-1"></a>              <span class="at">main =</span> <span class="st">&quot;Cor(Cholesterol, Hemoglobin)&quot;</span>,</span>
-<span id="cb47-13"><a href="#cb47-13" tabindex="-1"></a>              <span class="at">ylab =</span> <span class="st">&quot;Correlation&quot;</span>,</span>
-<span id="cb47-14"><a href="#cb47-14" tabindex="-1"></a>              <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(cor_vec) <span class="sc">*</span> <span class="fl">1.4</span>, <span class="dv">0</span>))</span>
-<span id="cb47-15"><a href="#cb47-15" tabindex="-1"></a><span class="fu">text</span>(bp, cor_vec, <span class="at">labels =</span> <span class="fu">round</span>(cor_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
-<span id="cb47-16"><a href="#cb47-16" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;grey50&quot;</span>)</span></code></pre></div>
+<span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cov_vec,</span>
+<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb47-6"><a href="#cb47-6" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Cov(Cholesterol, Hemoglobin)&quot;</span>,</span>
+<span id="cb47-7"><a href="#cb47-7" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Covariance&quot;</span>,</span>
+<span id="cb47-8"><a href="#cb47-8" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(cov_vec) <span class="sc">*</span> <span class="fl">1.35</span>, <span class="dv">0</span>)</span>
+<span id="cb47-9"><a href="#cb47-9" tabindex="-1"></a>)</span>
+<span id="cb47-10"><a href="#cb47-10" tabindex="-1"></a><span class="fu">text</span>(bp, cov_vec, <span class="at">labels =</span> <span class="fu">round</span>(cov_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb47-11"><a href="#cb47-11" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" tabindex="-1"></a><span class="co"># --- Correlation ---</span></span>
+<span id="cb47-13"><a href="#cb47-13" tabindex="-1"></a>bp <span class="ot">&lt;-</span> <span class="fu">barplot</span>(cor_vec,</span>
+<span id="cb47-14"><a href="#cb47-14" tabindex="-1"></a>  <span class="at">col =</span> bar_cols, <span class="at">border =</span> <span class="cn">NA</span>,</span>
+<span id="cb47-15"><a href="#cb47-15" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Cor(Cholesterol, Hemoglobin)&quot;</span>,</span>
+<span id="cb47-16"><a href="#cb47-16" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Correlation&quot;</span>,</span>
+<span id="cb47-17"><a href="#cb47-17" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(cor_vec) <span class="sc">*</span> <span class="fl">1.4</span>, <span class="dv">0</span>)</span>
+<span id="cb47-18"><a href="#cb47-18" tabindex="-1"></a>)</span>
+<span id="cb47-19"><a href="#cb47-19" tabindex="-1"></a><span class="fu">text</span>(bp, cor_vec, <span class="at">labels =</span> <span class="fu">round</span>(cor_vec, <span class="dv">2</span>), <span class="at">pos =</span> <span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb47-20"><a href="#cb47-20" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;grey50&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="application-benchmarking-symbolic-data-methods" class="section level1" number="13">
@@ -1237,17 +1279,23 @@ Analysis and Visualization</h2>
 classical data to symbolic data</h3>
 <p>The <code>aggregate_to_symbolic()</code> function converts a
 classical data frame into interval-valued or histogram-valued symbolic
-data via grouping (clustering, resampling, or a categorical
-variable).</p>
+data via grouping (clustering, resampling, or a categorical variable).
+Here we stratify by <code>Species</code> and form 10 k-means clusters
+within each, giving up to 30 interval-valued concepts. The
+<code>zero_width = &quot;remove&quot;</code> option drops any concept that
+collapses to a zero-width interval (<code>min == max</code>, e.g. a
+singleton cluster), since such degenerate intervals break width-based
+plots such as the index image below.</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a>iris_int <span class="ot">&lt;-</span> <span class="fu">aggregate_to_symbolic</span>(</span>
 <span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a>  iris,</span>
-<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>  <span class="at">type        =</span> <span class="st">&quot;int&quot;</span>,</span>
-<span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a>  <span class="at">group_by    =</span> <span class="st">&quot;kmeans&quot;</span>,</span>
+<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;int&quot;</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a>  <span class="at">group_by =</span> <span class="st">&quot;kmeans&quot;</span>,</span>
 <span id="cb48-6"><a href="#cb48-6" tabindex="-1"></a>  <span class="at">stratify_var =</span> <span class="st">&quot;Species&quot;</span>,</span>
-<span id="cb48-7"><a href="#cb48-7" tabindex="-1"></a>  <span class="at">K           =</span> <span class="dv">10</span></span>
-<span id="cb48-8"><a href="#cb48-8" tabindex="-1"></a>)</span>
-<span id="cb48-9"><a href="#cb48-9" tabindex="-1"></a>iris_int</span></code></pre></div>
+<span id="cb48-7"><a href="#cb48-7" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">10</span>,</span>
+<span id="cb48-8"><a href="#cb48-8" tabindex="-1"></a>  <span class="at">zero_width =</span> <span class="st">&quot;remove&quot;</span></span>
+<span id="cb48-9"><a href="#cb48-9" tabindex="-1"></a>)</span>
+<span id="cb48-10"><a href="#cb48-10" tabindex="-1"></a>iris_int</span></code></pre></div>
 </div>
 <div id="visualization-with-gginterval" class="section level3" number="13.1.2">
 <h3><span class="header-section-number">13.1.2</span> Visualization with
@@ -1255,36 +1303,25 @@ ggInterval</h3>
 <p>The <code>ggInterval</code> package provides specialized plots for
 symbolic data including index image plots, PCA biplots, and radar plots.
 The following examples require <code>ggInterval</code> to be installed.
-Note: with 30 observations the index image and PCA plots may take
+Note: with around 30 observations the index image and PCA plots may take
 several minutes to render.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="fu">library</span>(ggInterval)</span>
-<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a></span>
-<span id="cb49-4"><a href="#cb49-4" tabindex="-1"></a><span class="co"># Keep only interval columns (drop the &#39;sample&#39; label column).</span></span>
-<span id="cb49-5"><a href="#cb49-5" tabindex="-1"></a><span class="co"># Fix zero-width intervals from singleton clusters.</span></span>
-<span id="cb49-6"><a href="#cb49-6" tabindex="-1"></a>iris_int_num <span class="ot">&lt;-</span> iris_int[, <span class="fu">sapply</span>(iris_int, inherits, <span class="st">&quot;symbolic_interval&quot;</span>)]</span>
-<span id="cb49-7"><a href="#cb49-7" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">colnames</span>(iris_int_num)) {</span>
-<span id="cb49-8"><a href="#cb49-8" tabindex="-1"></a>  cv <span class="ot">&lt;-</span> <span class="fu">unclass</span>(iris_int_num[[v]])</span>
-<span id="cb49-9"><a href="#cb49-9" tabindex="-1"></a>  w  <span class="ot">&lt;-</span> <span class="fu">Im</span>(cv) <span class="sc">-</span> <span class="fu">Re</span>(cv)</span>
-<span id="cb49-10"><a href="#cb49-10" tabindex="-1"></a>  fix <span class="ot">&lt;-</span> <span class="fu">which</span>(w <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb49-11"><a href="#cb49-11" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(fix) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb49-12"><a href="#cb49-12" tabindex="-1"></a>    cv[fix] <span class="ot">&lt;-</span> <span class="fu">complex</span>(<span class="at">real =</span> <span class="fu">Re</span>(cv[fix]) <span class="sc">-</span> <span class="fl">1e-6</span>, <span class="at">imaginary =</span> <span class="fu">Im</span>(cv[fix]) <span class="sc">+</span> <span class="fl">1e-6</span>)</span>
-<span id="cb49-13"><a href="#cb49-13" tabindex="-1"></a>    <span class="fu">class</span>(cv) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
-<span id="cb49-14"><a href="#cb49-14" tabindex="-1"></a>    iris_int_num[[v]] <span class="ot">&lt;-</span> cv</span>
-<span id="cb49-15"><a href="#cb49-15" tabindex="-1"></a>  }</span>
-<span id="cb49-16"><a href="#cb49-16" tabindex="-1"></a>}</span></code></pre></div>
 <p><strong>Index image plot</strong> – a heatmap of all interval
 variables:</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">ggInterval_indexImage</span>(iris_int_num, <span class="at">plotAll =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="fu">library</span>(ggInterval)</span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a><span class="fu">ggInterval_indexImage</span>(iris_int[, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">plotAll =</span> <span class="cn">TRUE</span>, <span class="at">full_strip =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb49-4"><a href="#cb49-4" tabindex="-1"></a>                      <span class="at">column_condition =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb49-5"><a href="#cb49-5" tabindex="-1"></a>  <span class="fu">scale_colour_distiller</span>(<span class="at">palette =</span> <span class="st">&quot;Spectral&quot;</span>)</span></code></pre></div>
 <p><strong>PCA biplot</strong> – principal component analysis for
 interval data:</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">ggInterval_PCA</span>(iris_int_num)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">ggInterval_PCA</span>(iris_int[, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
 <p><strong>Radar plot</strong> – multivariate comparison of interval
 columns from <code>environment.mix</code> (observations 4 and 6):</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="fu">data</span>(environment.mix)</span>
-<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a>env_int <span class="ot">&lt;-</span> environment.mix[, <span class="dv">5</span><span class="sc">:</span><span class="dv">17</span>]</span>
-<span id="cb52-3"><a href="#cb52-3" tabindex="-1"></a><span class="fu">ggInterval_radarplot</span>(env_int, <span class="at">plotPartial =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>),</span>
-<span id="cb52-4"><a href="#cb52-4" tabindex="-1"></a>                     <span class="at">showLegend =</span> <span class="cn">FALSE</span>, <span class="at">addText =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">data</span>(environment.mix)</span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a><span class="fu">ggInterval_radarplot</span>(environment.mix,</span>
+<span id="cb51-3"><a href="#cb51-3" tabindex="-1"></a>  <span class="at">plotPartial =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>),</span>
+<span id="cb51-4"><a href="#cb51-4" tabindex="-1"></a>  <span class="at">showLegend =</span> <span class="cn">FALSE</span>, <span class="at">addText =</span> <span class="cn">FALSE</span></span>
+<span id="cb51-5"><a href="#cb51-5" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="interval-time-series-visualization" class="section level3" number="13.1.3">
 <h3><span class="header-section-number">13.1.3</span> Interval time
@@ -1292,41 +1329,48 @@ series visualization</h3>
 <p>We plot the first 12 months of the <code>irish_wind.its</code>
 dataset, showing each station’s wind speed interval as a bar with
 midpoint lines.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="fu">data</span>(irish_wind.its)</span>
-<span id="cb53-3"><a href="#cb53-3" tabindex="-1"></a>wind_sub <span class="ot">&lt;-</span> irish_wind.its[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, ]</span>
-<span id="cb53-4"><a href="#cb53-4" tabindex="-1"></a></span>
-<span id="cb53-5"><a href="#cb53-5" tabindex="-1"></a><span class="co"># Reshape to long format</span></span>
-<span id="cb53-6"><a href="#cb53-6" tabindex="-1"></a>stations <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;BIR&quot;</span>, <span class="st">&quot;DUB&quot;</span>, <span class="st">&quot;KIL&quot;</span>, <span class="st">&quot;SHA&quot;</span>, <span class="st">&quot;VAL&quot;</span>)</span>
-<span id="cb53-7"><a href="#cb53-7" tabindex="-1"></a>wind_long <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(stations, <span class="cf">function</span>(st) {</span>
-<span id="cb53-8"><a href="#cb53-8" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb53-9"><a href="#cb53-9" tabindex="-1"></a>    <span class="at">month_num =</span> <span class="fu">seq_len</span>(<span class="dv">12</span>),</span>
-<span id="cb53-10"><a href="#cb53-10" tabindex="-1"></a>    <span class="at">Station   =</span> st,</span>
-<span id="cb53-11"><a href="#cb53-11" tabindex="-1"></a>    <span class="at">lower     =</span> wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_l&quot;</span>)]],</span>
-<span id="cb53-12"><a href="#cb53-12" tabindex="-1"></a>    <span class="at">upper     =</span> wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_u&quot;</span>)]],</span>
-<span id="cb53-13"><a href="#cb53-13" tabindex="-1"></a>    <span class="at">mid       =</span> (wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_l&quot;</span>)]] <span class="sc">+</span> wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_u&quot;</span>)]]) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb53-14"><a href="#cb53-14" tabindex="-1"></a>  )</span>
-<span id="cb53-15"><a href="#cb53-15" tabindex="-1"></a>}))</span>
-<span id="cb53-16"><a href="#cb53-16" tabindex="-1"></a>wind_long<span class="sc">$</span>Station <span class="ot">&lt;-</span> <span class="fu">factor</span>(wind_long<span class="sc">$</span>Station, <span class="at">levels =</span> stations)</span>
-<span id="cb53-17"><a href="#cb53-17" tabindex="-1"></a></span>
-<span id="cb53-18"><a href="#cb53-18" tabindex="-1"></a><span class="co"># Dodge bars for each station within each month</span></span>
-<span id="cb53-19"><a href="#cb53-19" tabindex="-1"></a>n_st  <span class="ot">&lt;-</span> <span class="fu">length</span>(stations)</span>
-<span id="cb53-20"><a href="#cb53-20" tabindex="-1"></a>bar_w <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">/</span> n_st</span>
-<span id="cb53-21"><a href="#cb53-21" tabindex="-1"></a>wind_long<span class="sc">$</span>st_idx <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(wind_long<span class="sc">$</span>Station)</span>
-<span id="cb53-22"><a href="#cb53-22" tabindex="-1"></a>wind_long<span class="sc">$</span>x <span class="ot">&lt;-</span> wind_long<span class="sc">$</span>month_num <span class="sc">+</span></span>
-<span id="cb53-23"><a href="#cb53-23" tabindex="-1"></a>  (wind_long<span class="sc">$</span>st_idx <span class="sc">-</span> (n_st <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> bar_w</span>
-<span id="cb53-24"><a href="#cb53-24" tabindex="-1"></a></span>
-<span id="cb53-25"><a href="#cb53-25" tabindex="-1"></a><span class="fu">ggplot</span>(wind_long) <span class="sc">+</span></span>
-<span id="cb53-26"><a href="#cb53-26" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> x <span class="sc">-</span> bar_w <span class="sc">/</span> <span class="dv">2</span>, <span class="at">xmax =</span> x <span class="sc">+</span> bar_w <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb53-27"><a href="#cb53-27" tabindex="-1"></a>                <span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper, <span class="at">fill =</span> Station),</span>
-<span id="cb53-28"><a href="#cb53-28" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb53-29"><a href="#cb53-29" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> mid, <span class="at">color =</span> Station, <span class="at">group =</span> Station),</span>
-<span id="cb53-30"><a href="#cb53-30" tabindex="-1"></a>            <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb53-31"><a href="#cb53-31" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> mid, <span class="at">color =</span> Station), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb53-32"><a href="#cb53-32" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb) <span class="sc">+</span></span>
-<span id="cb53-33"><a href="#cb53-33" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Irish Wind Speed Intervals (1961)&quot;</span>,</span>
-<span id="cb53-34"><a href="#cb53-34" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Month&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Wind Speed (knots)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb53-35"><a href="#cb53-35" tabindex="-1"></a>  <span class="fu">theme_grey</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a><span class="fu">data</span>(irish_wind.its)</span>
+<span id="cb52-3"><a href="#cb52-3" tabindex="-1"></a>wind_sub <span class="ot">&lt;-</span> irish_wind.its[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, ]</span>
+<span id="cb52-4"><a href="#cb52-4" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" tabindex="-1"></a><span class="co"># Reshape to long format</span></span>
+<span id="cb52-6"><a href="#cb52-6" tabindex="-1"></a>stations <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;BIR&quot;</span>, <span class="st">&quot;DUB&quot;</span>, <span class="st">&quot;KIL&quot;</span>, <span class="st">&quot;SHA&quot;</span>, <span class="st">&quot;VAL&quot;</span>)</span>
+<span id="cb52-7"><a href="#cb52-7" tabindex="-1"></a>wind_long <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(stations, <span class="cf">function</span>(st) {</span>
+<span id="cb52-8"><a href="#cb52-8" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb52-9"><a href="#cb52-9" tabindex="-1"></a>    <span class="at">month_num =</span> <span class="fu">seq_len</span>(<span class="dv">12</span>),</span>
+<span id="cb52-10"><a href="#cb52-10" tabindex="-1"></a>    <span class="at">Station   =</span> st,</span>
+<span id="cb52-11"><a href="#cb52-11" tabindex="-1"></a>    <span class="at">lower     =</span> wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_l&quot;</span>)]],</span>
+<span id="cb52-12"><a href="#cb52-12" tabindex="-1"></a>    <span class="at">upper     =</span> wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_u&quot;</span>)]],</span>
+<span id="cb52-13"><a href="#cb52-13" tabindex="-1"></a>    <span class="at">mid       =</span> (wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_l&quot;</span>)]] <span class="sc">+</span> wind_sub[[<span class="fu">paste0</span>(st, <span class="st">&quot;_u&quot;</span>)]]) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb52-14"><a href="#cb52-14" tabindex="-1"></a>  )</span>
+<span id="cb52-15"><a href="#cb52-15" tabindex="-1"></a>}))</span>
+<span id="cb52-16"><a href="#cb52-16" tabindex="-1"></a>wind_long<span class="sc">$</span>Station <span class="ot">&lt;-</span> <span class="fu">factor</span>(wind_long<span class="sc">$</span>Station, <span class="at">levels =</span> stations)</span>
+<span id="cb52-17"><a href="#cb52-17" tabindex="-1"></a></span>
+<span id="cb52-18"><a href="#cb52-18" tabindex="-1"></a><span class="co"># Dodge bars for each station within each month</span></span>
+<span id="cb52-19"><a href="#cb52-19" tabindex="-1"></a>n_st <span class="ot">&lt;-</span> <span class="fu">length</span>(stations)</span>
+<span id="cb52-20"><a href="#cb52-20" tabindex="-1"></a>bar_w <span class="ot">&lt;-</span> <span class="fl">0.6</span> <span class="sc">/</span> n_st</span>
+<span id="cb52-21"><a href="#cb52-21" tabindex="-1"></a>wind_long<span class="sc">$</span>st_idx <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(wind_long<span class="sc">$</span>Station)</span>
+<span id="cb52-22"><a href="#cb52-22" tabindex="-1"></a>wind_long<span class="sc">$</span>x <span class="ot">&lt;-</span> wind_long<span class="sc">$</span>month_num <span class="sc">+</span></span>
+<span id="cb52-23"><a href="#cb52-23" tabindex="-1"></a>  (wind_long<span class="sc">$</span>st_idx <span class="sc">-</span> (n_st <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> bar_w</span>
+<span id="cb52-24"><a href="#cb52-24" tabindex="-1"></a></span>
+<span id="cb52-25"><a href="#cb52-25" tabindex="-1"></a><span class="fu">ggplot</span>(wind_long) <span class="sc">+</span></span>
+<span id="cb52-26"><a href="#cb52-26" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb52-27"><a href="#cb52-27" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb52-28"><a href="#cb52-28" tabindex="-1"></a>      <span class="at">xmin =</span> x <span class="sc">-</span> bar_w <span class="sc">/</span> <span class="dv">2</span>, <span class="at">xmax =</span> x <span class="sc">+</span> bar_w <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb52-29"><a href="#cb52-29" tabindex="-1"></a>      <span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper, <span class="at">fill =</span> Station</span>
+<span id="cb52-30"><a href="#cb52-30" tabindex="-1"></a>    ),</span>
+<span id="cb52-31"><a href="#cb52-31" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">color =</span> <span class="cn">NA</span></span>
+<span id="cb52-32"><a href="#cb52-32" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-33"><a href="#cb52-33" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> mid, <span class="at">color =</span> Station, <span class="at">group =</span> Station),</span>
+<span id="cb52-34"><a href="#cb52-34" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span></span>
+<span id="cb52-35"><a href="#cb52-35" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-36"><a href="#cb52-36" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> mid, <span class="at">color =</span> Station), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb52-37"><a href="#cb52-37" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb) <span class="sc">+</span></span>
+<span id="cb52-38"><a href="#cb52-38" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb52-39"><a href="#cb52-39" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Irish Wind Speed Intervals (1961)&quot;</span>,</span>
+<span id="cb52-40"><a href="#cb52-40" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Month&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Wind Speed (knots)&quot;</span></span>
+<span id="cb52-41"><a href="#cb52-41" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-42"><a href="#cb52-42" tabindex="-1"></a>  <span class="fu">theme_grey</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="clustering-for-interval-valued-data" class="section level2" number="13.2">
@@ -1352,72 +1396,96 @@ across all <span class="math inline">\(k\)</span>. A 2-step lookahead
 skips temporary dips. This yields a higher threshold (fewer clusters)
 for small datasets and a lower threshold (more clusters allowed) for
 large datasets.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="fu">library</span>(symbolicDA)</span>
-<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a></span>
-<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a></span>
-<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a>datasets_clust_int <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;face.iGAP&quot;</span>,              <span class="at">data =</span> <span class="st">&quot;face.iGAP&quot;</span>),</span>
-<span id="cb54-7"><a href="#cb54-7" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;prostate.int&quot;</span>,           <span class="at">data =</span> <span class="st">&quot;prostate.int&quot;</span>),</span>
-<span id="cb54-8"><a href="#cb54-8" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;nycflights.int&quot;</span>,         <span class="at">data =</span> <span class="st">&quot;nycflights.int&quot;</span>),</span>
-<span id="cb54-9"><a href="#cb54-9" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;china_temp.int&quot;</span>,         <span class="at">data =</span> <span class="st">&quot;china_temp.int&quot;</span>),</span>
-<span id="cb54-10"><a href="#cb54-10" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;lisbon_air_quality.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;lisbon_air_quality.int&quot;</span>)</span>
-<span id="cb54-11"><a href="#cb54-11" tabindex="-1"></a>)</span>
-<span id="cb54-12"><a href="#cb54-12" tabindex="-1"></a></span>
-<span id="cb54-13"><a href="#cb54-13" tabindex="-1"></a>clust_int_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_clust_int, <span class="cf">function</span>(ds) {</span>
-<span id="cb54-14"><a href="#cb54-14" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb54-15"><a href="#cb54-15" tabindex="-1"></a>    <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>data)</span>
-<span id="cb54-16"><a href="#cb54-16" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>data)</span>
-<span id="cb54-17"><a href="#cb54-17" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>)) {</span>
-<span id="cb54-18"><a href="#cb54-18" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">int_convert_format</span>(x, <span class="at">to =</span> <span class="st">&quot;RSDA&quot;</span>), <span class="at">error =</span> <span class="cf">function</span>(e) x)</span>
-<span id="cb54-19"><a href="#cb54-19" tabindex="-1"></a>      <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
-<span id="cb54-20"><a href="#cb54-20" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">is.complex</span>(x[[i]]) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">inherits</span>(x[[i]], <span class="st">&quot;symbolic_interval&quot;</span>))</span>
-<span id="cb54-21"><a href="#cb54-21" tabindex="-1"></a>          <span class="fu">class</span>(x[[i]]) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
-<span id="cb54-22"><a href="#cb54-22" tabindex="-1"></a>      }</span>
-<span id="cb54-23"><a href="#cb54-23" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>))</span>
-<span id="cb54-24"><a href="#cb54-24" tabindex="-1"></a>        <span class="fu">class</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_tbl&quot;</span>, <span class="fu">class</span>(x))</span>
-<span id="cb54-25"><a href="#cb54-25" tabindex="-1"></a>    }</span>
-<span id="cb54-26"><a href="#cb54-26" tabindex="-1"></a>    x_int <span class="ot">&lt;-</span> <span class="fu">.get_interval_cols</span>(x)</span>
-<span id="cb54-27"><a href="#cb54-27" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x_int); p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(x_int)</span>
-<span id="cb54-28"><a href="#cb54-28" tabindex="-1"></a>    k_max <span class="ot">&lt;-</span> <span class="fu">min</span>(n <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">10</span>, <span class="fu">max</span>(<span class="dv">3</span>, <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">5</span>)))</span>
-<span id="cb54-29"><a href="#cb54-29" tabindex="-1"></a></span>
-<span id="cb54-30"><a href="#cb54-30" tabindex="-1"></a>    d <span class="ot">&lt;-</span> <span class="fu">int_dist_matrix</span>(x_int, <span class="at">method =</span> <span class="st">&quot;hausdorff&quot;</span>)</span>
-<span id="cb54-31"><a href="#cb54-31" tabindex="-1"></a>    so <span class="ot">&lt;-</span> <span class="fu">simple2SO</span>(<span class="fu">.to_3d_array</span>(x_int))</span>
-<span id="cb54-32"><a href="#cb54-32" tabindex="-1"></a></span>
-<span id="cb54-33"><a href="#cb54-33" tabindex="-1"></a>    km_qs <span class="ot">&lt;-</span> dc_qs <span class="ot">&lt;-</span> sc_qs <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">rep</span>(<span class="cn">NA_real_</span>, k_max <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb54-34"><a href="#cb54-34" tabindex="-1"></a>                                         <span class="fu">as.character</span>(<span class="dv">2</span><span class="sc">:</span>k_max))</span>
-<span id="cb54-35"><a href="#cb54-35" tabindex="-1"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>k_max) {</span>
-<span id="cb54-36"><a href="#cb54-36" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb54-37"><a href="#cb54-37" tabindex="-1"></a>      km_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb54-38"><a href="#cb54-38" tabindex="-1"></a>        res <span class="ot">&lt;-</span> <span class="fu">sym.kmeans</span>(x_int, <span class="at">k =</span> k)</span>
-<span id="cb54-39"><a href="#cb54-39" tabindex="-1"></a>        <span class="dv">1</span> <span class="sc">-</span> res<span class="sc">$</span>tot.withinss <span class="sc">/</span> res<span class="sc">$</span>totss</span>
-<span id="cb54-40"><a href="#cb54-40" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb54-41"><a href="#cb54-41" tabindex="-1"></a></span>
-<span id="cb54-42"><a href="#cb54-42" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb54-43"><a href="#cb54-43" tabindex="-1"></a>      dc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb54-44"><a href="#cb54-44" tabindex="-1"></a>        cl <span class="ot">&lt;-</span> <span class="fu">DClust</span>(d, <span class="at">cl =</span> k, <span class="at">iter =</span> <span class="dv">100</span>)</span>
-<span id="cb54-45"><a href="#cb54-45" tabindex="-1"></a>        <span class="fu">.clust_quality</span>(d, cl)</span>
-<span id="cb54-46"><a href="#cb54-46" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb54-47"><a href="#cb54-47" tabindex="-1"></a></span>
-<span id="cb54-48"><a href="#cb54-48" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb54-49"><a href="#cb54-49" tabindex="-1"></a>      sc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb54-50"><a href="#cb54-50" tabindex="-1"></a>        cl <span class="ot">&lt;-</span> <span class="fu">SClust</span>(so, <span class="at">cl =</span> k, <span class="at">iter =</span> <span class="dv">100</span>)</span>
-<span id="cb54-51"><a href="#cb54-51" tabindex="-1"></a>        <span class="fu">.clust_quality</span>(d, cl)</span>
-<span id="cb54-52"><a href="#cb54-52" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb54-53"><a href="#cb54-53" tabindex="-1"></a>    }</span>
-<span id="cb54-54"><a href="#cb54-54" tabindex="-1"></a></span>
-<span id="cb54-55"><a href="#cb54-55" tabindex="-1"></a>    km_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(km_qs, n); km_q <span class="ot">&lt;-</span> km_qs[<span class="fu">as.character</span>(km_k)]</span>
-<span id="cb54-56"><a href="#cb54-56" tabindex="-1"></a>    dc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(dc_qs, n); dc_q <span class="ot">&lt;-</span> dc_qs[<span class="fu">as.character</span>(dc_k)]</span>
-<span id="cb54-57"><a href="#cb54-57" tabindex="-1"></a>    sc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(sc_qs, n); sc_q <span class="ot">&lt;-</span> sc_qs[<span class="fu">as.character</span>(sc_k)]</span>
-<span id="cb54-58"><a href="#cb54-58" tabindex="-1"></a></span>
-<span id="cb54-59"><a href="#cb54-59" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">n =</span> n, <span class="at">p =</span> p,</span>
-<span id="cb54-60"><a href="#cb54-60" tabindex="-1"></a>               <span class="at">sym.kmeans =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, km_q, km_k),</span>
-<span id="cb54-61"><a href="#cb54-61" tabindex="-1"></a>               <span class="at">DClust     =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, dc_q, dc_k),</span>
-<span id="cb54-62"><a href="#cb54-62" tabindex="-1"></a>               <span class="at">SClust     =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, sc_q, sc_k))</span>
-<span id="cb54-63"><a href="#cb54-63" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
-<span id="cb54-64"><a href="#cb54-64" tabindex="-1"></a>}))</span></code></pre></div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">kable</span>(clust_int_results, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Table 4: Interval clustering quality (1 - WSS/TSS) with optimal k in parentheses&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="fu">library</span>(symbolicDA)</span>
+<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb53-4"><a href="#cb53-4" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="#cb53-5" tabindex="-1"></a>datasets_clust_int <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb53-6"><a href="#cb53-6" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;face.iGAP&quot;</span>, <span class="at">data =</span> <span class="st">&quot;face.iGAP&quot;</span>),</span>
+<span id="cb53-7"><a href="#cb53-7" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;prostate.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;prostate.int&quot;</span>),</span>
+<span id="cb53-8"><a href="#cb53-8" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;nycflights.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;nycflights.int&quot;</span>),</span>
+<span id="cb53-9"><a href="#cb53-9" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;china_temp.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;china_temp.int&quot;</span>),</span>
+<span id="cb53-10"><a href="#cb53-10" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;lisbon_air_quality.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;lisbon_air_quality.int&quot;</span>)</span>
+<span id="cb53-11"><a href="#cb53-11" tabindex="-1"></a>)</span>
+<span id="cb53-12"><a href="#cb53-12" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" tabindex="-1"></a>clust_int_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_clust_int, <span class="cf">function</span>(ds) {</span>
+<span id="cb53-14"><a href="#cb53-14" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb53-15"><a href="#cb53-15" tabindex="-1"></a>    {</span>
+<span id="cb53-16"><a href="#cb53-16" tabindex="-1"></a>      <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>data)</span>
+<span id="cb53-17"><a href="#cb53-17" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>data)</span>
+<span id="cb53-18"><a href="#cb53-18" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>)) {</span>
+<span id="cb53-19"><a href="#cb53-19" tabindex="-1"></a>        x <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">int_convert_format</span>(x, <span class="at">to =</span> <span class="st">&quot;RSDA&quot;</span>), <span class="at">error =</span> <span class="cf">function</span>(e) x)</span>
+<span id="cb53-20"><a href="#cb53-20" tabindex="-1"></a>        <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
+<span id="cb53-21"><a href="#cb53-21" tabindex="-1"></a>          <span class="cf">if</span> (<span class="fu">is.complex</span>(x[[i]]) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">inherits</span>(x[[i]], <span class="st">&quot;symbolic_interval&quot;</span>)) {</span>
+<span id="cb53-22"><a href="#cb53-22" tabindex="-1"></a>            <span class="fu">class</span>(x[[i]]) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
+<span id="cb53-23"><a href="#cb53-23" tabindex="-1"></a>          }</span>
+<span id="cb53-24"><a href="#cb53-24" tabindex="-1"></a>        }</span>
+<span id="cb53-25"><a href="#cb53-25" tabindex="-1"></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>)) {</span>
+<span id="cb53-26"><a href="#cb53-26" tabindex="-1"></a>          <span class="fu">class</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_tbl&quot;</span>, <span class="fu">class</span>(x))</span>
+<span id="cb53-27"><a href="#cb53-27" tabindex="-1"></a>        }</span>
+<span id="cb53-28"><a href="#cb53-28" tabindex="-1"></a>      }</span>
+<span id="cb53-29"><a href="#cb53-29" tabindex="-1"></a>      x_int <span class="ot">&lt;-</span> <span class="fu">.get_interval_cols</span>(x)</span>
+<span id="cb53-30"><a href="#cb53-30" tabindex="-1"></a>      n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x_int)</span>
+<span id="cb53-31"><a href="#cb53-31" tabindex="-1"></a>      p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(x_int)</span>
+<span id="cb53-32"><a href="#cb53-32" tabindex="-1"></a>      k_max <span class="ot">&lt;-</span> <span class="fu">min</span>(n <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">10</span>, <span class="fu">max</span>(<span class="dv">3</span>, <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">5</span>)))</span>
+<span id="cb53-33"><a href="#cb53-33" tabindex="-1"></a></span>
+<span id="cb53-34"><a href="#cb53-34" tabindex="-1"></a>      d <span class="ot">&lt;-</span> <span class="fu">int_dist_matrix</span>(x_int, <span class="at">method =</span> <span class="st">&quot;hausdorff&quot;</span>)</span>
+<span id="cb53-35"><a href="#cb53-35" tabindex="-1"></a>      so <span class="ot">&lt;-</span> <span class="fu">simple2SO</span>(<span class="fu">.to_3d_array</span>(x_int))</span>
+<span id="cb53-36"><a href="#cb53-36" tabindex="-1"></a></span>
+<span id="cb53-37"><a href="#cb53-37" tabindex="-1"></a>      km_qs <span class="ot">&lt;-</span> dc_qs <span class="ot">&lt;-</span> sc_qs <span class="ot">&lt;-</span> <span class="fu">setNames</span>(</span>
+<span id="cb53-38"><a href="#cb53-38" tabindex="-1"></a>        <span class="fu">rep</span>(<span class="cn">NA_real_</span>, k_max <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb53-39"><a href="#cb53-39" tabindex="-1"></a>        <span class="fu">as.character</span>(<span class="dv">2</span><span class="sc">:</span>k_max)</span>
+<span id="cb53-40"><a href="#cb53-40" tabindex="-1"></a>      )</span>
+<span id="cb53-41"><a href="#cb53-41" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>k_max) {</span>
+<span id="cb53-42"><a href="#cb53-42" tabindex="-1"></a>        <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb53-43"><a href="#cb53-43" tabindex="-1"></a>        km_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb53-44"><a href="#cb53-44" tabindex="-1"></a>          {</span>
+<span id="cb53-45"><a href="#cb53-45" tabindex="-1"></a>            res <span class="ot">&lt;-</span> <span class="fu">sym.kmeans</span>(x_int, <span class="at">k =</span> k)</span>
+<span id="cb53-46"><a href="#cb53-46" tabindex="-1"></a>            <span class="dv">1</span> <span class="sc">-</span> res<span class="sc">$</span>tot.withinss <span class="sc">/</span> res<span class="sc">$</span>totss</span>
+<span id="cb53-47"><a href="#cb53-47" tabindex="-1"></a>          },</span>
+<span id="cb53-48"><a href="#cb53-48" tabindex="-1"></a>          <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb53-49"><a href="#cb53-49" tabindex="-1"></a>        )</span>
+<span id="cb53-50"><a href="#cb53-50" tabindex="-1"></a></span>
+<span id="cb53-51"><a href="#cb53-51" tabindex="-1"></a>        <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb53-52"><a href="#cb53-52" tabindex="-1"></a>        dc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb53-53"><a href="#cb53-53" tabindex="-1"></a>          {</span>
+<span id="cb53-54"><a href="#cb53-54" tabindex="-1"></a>            cl <span class="ot">&lt;-</span> <span class="fu">DClust</span>(d, <span class="at">cl =</span> k, <span class="at">iter =</span> <span class="dv">100</span>)</span>
+<span id="cb53-55"><a href="#cb53-55" tabindex="-1"></a>            <span class="fu">.clust_quality</span>(d, cl)</span>
+<span id="cb53-56"><a href="#cb53-56" tabindex="-1"></a>          },</span>
+<span id="cb53-57"><a href="#cb53-57" tabindex="-1"></a>          <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb53-58"><a href="#cb53-58" tabindex="-1"></a>        )</span>
+<span id="cb53-59"><a href="#cb53-59" tabindex="-1"></a></span>
+<span id="cb53-60"><a href="#cb53-60" tabindex="-1"></a>        <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb53-61"><a href="#cb53-61" tabindex="-1"></a>        sc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb53-62"><a href="#cb53-62" tabindex="-1"></a>          {</span>
+<span id="cb53-63"><a href="#cb53-63" tabindex="-1"></a>            cl <span class="ot">&lt;-</span> <span class="fu">SClust</span>(so, <span class="at">cl =</span> k, <span class="at">iter =</span> <span class="dv">100</span>)</span>
+<span id="cb53-64"><a href="#cb53-64" tabindex="-1"></a>            <span class="fu">.clust_quality</span>(d, cl)</span>
+<span id="cb53-65"><a href="#cb53-65" tabindex="-1"></a>          },</span>
+<span id="cb53-66"><a href="#cb53-66" tabindex="-1"></a>          <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb53-67"><a href="#cb53-67" tabindex="-1"></a>        )</span>
+<span id="cb53-68"><a href="#cb53-68" tabindex="-1"></a>      }</span>
+<span id="cb53-69"><a href="#cb53-69" tabindex="-1"></a></span>
+<span id="cb53-70"><a href="#cb53-70" tabindex="-1"></a>      km_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(km_qs, n)</span>
+<span id="cb53-71"><a href="#cb53-71" tabindex="-1"></a>      km_q <span class="ot">&lt;-</span> km_qs[<span class="fu">as.character</span>(km_k)]</span>
+<span id="cb53-72"><a href="#cb53-72" tabindex="-1"></a>      dc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(dc_qs, n)</span>
+<span id="cb53-73"><a href="#cb53-73" tabindex="-1"></a>      dc_q <span class="ot">&lt;-</span> dc_qs[<span class="fu">as.character</span>(dc_k)]</span>
+<span id="cb53-74"><a href="#cb53-74" tabindex="-1"></a>      sc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(sc_qs, n)</span>
+<span id="cb53-75"><a href="#cb53-75" tabindex="-1"></a>      sc_q <span class="ot">&lt;-</span> sc_qs[<span class="fu">as.character</span>(sc_k)]</span>
+<span id="cb53-76"><a href="#cb53-76" tabindex="-1"></a></span>
+<span id="cb53-77"><a href="#cb53-77" tabindex="-1"></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb53-78"><a href="#cb53-78" tabindex="-1"></a>        <span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">n =</span> n, <span class="at">p =</span> p,</span>
+<span id="cb53-79"><a href="#cb53-79" tabindex="-1"></a>        <span class="at">sym.kmeans =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, km_q, km_k),</span>
+<span id="cb53-80"><a href="#cb53-80" tabindex="-1"></a>        <span class="at">DClust =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, dc_q, dc_k),</span>
+<span id="cb53-81"><a href="#cb53-81" tabindex="-1"></a>        <span class="at">SClust =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, sc_q, sc_k)</span>
+<span id="cb53-82"><a href="#cb53-82" tabindex="-1"></a>      )</span>
+<span id="cb53-83"><a href="#cb53-83" tabindex="-1"></a>    },</span>
+<span id="cb53-84"><a href="#cb53-84" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span></span>
+<span id="cb53-85"><a href="#cb53-85" tabindex="-1"></a>  )</span>
+<span id="cb53-86"><a href="#cb53-86" tabindex="-1"></a>}))</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="fu">kable</span>(clust_int_results,</span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Table 4: Interval clustering quality (1 - WSS/TSS) with optimal k in parentheses&quot;</span></span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="clustering-for-histogram-valued-data" class="section level2" number="13.3">
 <h2><span class="header-section-number">13.3</span> Clustering for
@@ -1434,63 +1502,85 @@ distance</li>
 </ul>
 <p>The same n-adaptive elbow method from Section 4.2 is used for each
 method to independently select its optimal <span class="math inline">\(k\)</span>.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a></span>
-<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>datasets_clust_hist <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;age_pyramids.hist&quot;</span>),</span>
-<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;ozone.hist&quot;</span>),</span>
-<span id="cb56-6"><a href="#cb56-6" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;china_climate_season.hist&quot;</span>),</span>
-<span id="cb56-7"><a href="#cb56-7" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;french_agriculture.hist&quot;</span>),</span>
-<span id="cb56-8"><a href="#cb56-8" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;flights_detail.hist&quot;</span>)</span>
-<span id="cb56-9"><a href="#cb56-9" tabindex="-1"></a>)</span>
-<span id="cb56-10"><a href="#cb56-10" tabindex="-1"></a></span>
-<span id="cb56-11"><a href="#cb56-11" tabindex="-1"></a>clust_hist_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_clust_hist, <span class="cf">function</span>(ds) {</span>
-<span id="cb56-12"><a href="#cb56-12" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb56-13"><a href="#cb56-13" tabindex="-1"></a>    <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>name, <span class="at">package =</span> <span class="st">&quot;dataSDA&quot;</span>)</span>
-<span id="cb56-14"><a href="#cb56-14" tabindex="-1"></a>    raw <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>name)</span>
-<span id="cb56-15"><a href="#cb56-15" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">.dataSDA_hist_to_MatH</span>(raw)</span>
-<span id="cb56-16"><a href="#cb56-16" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x<span class="sc">@</span>M); p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(x<span class="sc">@</span>M)</span>
-<span id="cb56-17"><a href="#cb56-17" tabindex="-1"></a>    k_max <span class="ot">&lt;-</span> <span class="fu">min</span>(n <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">10</span>, <span class="fu">max</span>(<span class="dv">3</span>, <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">5</span>)))</span>
-<span id="cb56-18"><a href="#cb56-18" tabindex="-1"></a></span>
-<span id="cb56-19"><a href="#cb56-19" tabindex="-1"></a>    <span class="co"># Precompute Wasserstein distance matrix and hclust tree (shared across k)</span></span>
-<span id="cb56-20"><a href="#cb56-20" tabindex="-1"></a>    dm <span class="ot">&lt;-</span> <span class="fu">WH_MAT_DIST</span>(x)</span>
-<span id="cb56-21"><a href="#cb56-21" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb56-22"><a href="#cb56-22" tabindex="-1"></a>    hc <span class="ot">&lt;-</span> <span class="fu">WH_hclust</span>(x, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb56-23"><a href="#cb56-23" tabindex="-1"></a></span>
-<span id="cb56-24"><a href="#cb56-24" tabindex="-1"></a>    km_qs <span class="ot">&lt;-</span> fc_qs <span class="ot">&lt;-</span> hc_qs <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">rep</span>(<span class="cn">NA_real_</span>, k_max <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb56-25"><a href="#cb56-25" tabindex="-1"></a>                                         <span class="fu">as.character</span>(<span class="dv">2</span><span class="sc">:</span>k_max))</span>
-<span id="cb56-26"><a href="#cb56-26" tabindex="-1"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>k_max) {</span>
-<span id="cb56-27"><a href="#cb56-27" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb56-28"><a href="#cb56-28" tabindex="-1"></a>      km_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb56-29"><a href="#cb56-29" tabindex="-1"></a>        res <span class="ot">&lt;-</span> <span class="fu">WH_kmeans</span>(x, <span class="at">k =</span> k)</span>
-<span id="cb56-30"><a href="#cb56-30" tabindex="-1"></a>        res<span class="sc">$</span>quality</span>
-<span id="cb56-31"><a href="#cb56-31" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb56-32"><a href="#cb56-32" tabindex="-1"></a></span>
-<span id="cb56-33"><a href="#cb56-33" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb56-34"><a href="#cb56-34" tabindex="-1"></a>      fc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb56-35"><a href="#cb56-35" tabindex="-1"></a>        res <span class="ot">&lt;-</span> <span class="fu">WH_fcmeans</span>(x, <span class="at">k =</span> k)</span>
-<span id="cb56-36"><a href="#cb56-36" tabindex="-1"></a>        res<span class="sc">$</span>quality</span>
-<span id="cb56-37"><a href="#cb56-37" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb56-38"><a href="#cb56-38" tabindex="-1"></a></span>
-<span id="cb56-39"><a href="#cb56-39" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb56-40"><a href="#cb56-40" tabindex="-1"></a>      hc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb56-41"><a href="#cb56-41" tabindex="-1"></a>        cl <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">k =</span> k)</span>
-<span id="cb56-42"><a href="#cb56-42" tabindex="-1"></a>        <span class="fu">.clust_quality</span>(dm, cl)</span>
-<span id="cb56-43"><a href="#cb56-43" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb56-44"><a href="#cb56-44" tabindex="-1"></a>    }</span>
-<span id="cb56-45"><a href="#cb56-45" tabindex="-1"></a></span>
-<span id="cb56-46"><a href="#cb56-46" tabindex="-1"></a>    km_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(km_qs, n); km_q <span class="ot">&lt;-</span> km_qs[<span class="fu">as.character</span>(km_k)]</span>
-<span id="cb56-47"><a href="#cb56-47" tabindex="-1"></a>    fc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(fc_qs, n); fc_q <span class="ot">&lt;-</span> fc_qs[<span class="fu">as.character</span>(fc_k)]</span>
-<span id="cb56-48"><a href="#cb56-48" tabindex="-1"></a>    hc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(hc_qs, n); hc_q <span class="ot">&lt;-</span> hc_qs[<span class="fu">as.character</span>(hc_k)]</span>
-<span id="cb56-49"><a href="#cb56-49" tabindex="-1"></a></span>
-<span id="cb56-50"><a href="#cb56-50" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">n =</span> n, <span class="at">p =</span> p,</span>
-<span id="cb56-51"><a href="#cb56-51" tabindex="-1"></a>               <span class="at">WH_kmeans  =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, km_q, km_k),</span>
-<span id="cb56-52"><a href="#cb56-52" tabindex="-1"></a>               <span class="at">WH_fcmeans =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, fc_q, fc_k),</span>
-<span id="cb56-53"><a href="#cb56-53" tabindex="-1"></a>               <span class="at">WH_hclust  =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, hc_q, hc_k))</span>
-<span id="cb56-54"><a href="#cb56-54" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
-<span id="cb56-55"><a href="#cb56-55" tabindex="-1"></a>}))</span></code></pre></div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">kable</span>(clust_hist_results, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Table 5: Histogram clustering quality (1 - WSS/TSS) with optimal k in parentheses&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a></span>
+<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>datasets_clust_hist <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;age_pyramids.hist&quot;</span>),</span>
+<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;ozone.hist&quot;</span>),</span>
+<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;china_climate_season.hist&quot;</span>),</span>
+<span id="cb55-7"><a href="#cb55-7" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;french_agriculture.hist&quot;</span>),</span>
+<span id="cb55-8"><a href="#cb55-8" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;flights_detail.hist&quot;</span>)</span>
+<span id="cb55-9"><a href="#cb55-9" tabindex="-1"></a>)</span>
+<span id="cb55-10"><a href="#cb55-10" tabindex="-1"></a></span>
+<span id="cb55-11"><a href="#cb55-11" tabindex="-1"></a>clust_hist_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_clust_hist, <span class="cf">function</span>(ds) {</span>
+<span id="cb55-12"><a href="#cb55-12" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb55-13"><a href="#cb55-13" tabindex="-1"></a>    {</span>
+<span id="cb55-14"><a href="#cb55-14" tabindex="-1"></a>      <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>name, <span class="at">package =</span> <span class="st">&quot;dataSDA&quot;</span>)</span>
+<span id="cb55-15"><a href="#cb55-15" tabindex="-1"></a>      raw <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>name)</span>
+<span id="cb55-16"><a href="#cb55-16" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">.dataSDA_hist_to_MatH</span>(raw)</span>
+<span id="cb55-17"><a href="#cb55-17" tabindex="-1"></a>      n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x<span class="sc">@</span>M)</span>
+<span id="cb55-18"><a href="#cb55-18" tabindex="-1"></a>      p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(x<span class="sc">@</span>M)</span>
+<span id="cb55-19"><a href="#cb55-19" tabindex="-1"></a>      k_max <span class="ot">&lt;-</span> <span class="fu">min</span>(n <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">10</span>, <span class="fu">max</span>(<span class="dv">3</span>, <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">5</span>)))</span>
+<span id="cb55-20"><a href="#cb55-20" tabindex="-1"></a></span>
+<span id="cb55-21"><a href="#cb55-21" tabindex="-1"></a>      <span class="co"># Precompute Wasserstein distance matrix and hclust tree (shared across k)</span></span>
+<span id="cb55-22"><a href="#cb55-22" tabindex="-1"></a>      dm <span class="ot">&lt;-</span> <span class="fu">WH_MAT_DIST</span>(x)</span>
+<span id="cb55-23"><a href="#cb55-23" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-24"><a href="#cb55-24" tabindex="-1"></a>      hc <span class="ot">&lt;-</span> <span class="fu">WH_hclust</span>(x, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb55-25"><a href="#cb55-25" tabindex="-1"></a></span>
+<span id="cb55-26"><a href="#cb55-26" tabindex="-1"></a>      km_qs <span class="ot">&lt;-</span> fc_qs <span class="ot">&lt;-</span> hc_qs <span class="ot">&lt;-</span> <span class="fu">setNames</span>(</span>
+<span id="cb55-27"><a href="#cb55-27" tabindex="-1"></a>        <span class="fu">rep</span>(<span class="cn">NA_real_</span>, k_max <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb55-28"><a href="#cb55-28" tabindex="-1"></a>        <span class="fu">as.character</span>(<span class="dv">2</span><span class="sc">:</span>k_max)</span>
+<span id="cb55-29"><a href="#cb55-29" tabindex="-1"></a>      )</span>
+<span id="cb55-30"><a href="#cb55-30" tabindex="-1"></a>      <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>k_max) {</span>
+<span id="cb55-31"><a href="#cb55-31" tabindex="-1"></a>        <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-32"><a href="#cb55-32" tabindex="-1"></a>        km_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb55-33"><a href="#cb55-33" tabindex="-1"></a>          {</span>
+<span id="cb55-34"><a href="#cb55-34" tabindex="-1"></a>            res <span class="ot">&lt;-</span> <span class="fu">WH_kmeans</span>(x, <span class="at">k =</span> k)</span>
+<span id="cb55-35"><a href="#cb55-35" tabindex="-1"></a>            res<span class="sc">$</span>quality</span>
+<span id="cb55-36"><a href="#cb55-36" tabindex="-1"></a>          },</span>
+<span id="cb55-37"><a href="#cb55-37" tabindex="-1"></a>          <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb55-38"><a href="#cb55-38" tabindex="-1"></a>        )</span>
+<span id="cb55-39"><a href="#cb55-39" tabindex="-1"></a></span>
+<span id="cb55-40"><a href="#cb55-40" tabindex="-1"></a>        <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-41"><a href="#cb55-41" tabindex="-1"></a>        fc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb55-42"><a href="#cb55-42" tabindex="-1"></a>          {</span>
+<span id="cb55-43"><a href="#cb55-43" tabindex="-1"></a>            res <span class="ot">&lt;-</span> <span class="fu">WH_fcmeans</span>(x, <span class="at">k =</span> k)</span>
+<span id="cb55-44"><a href="#cb55-44" tabindex="-1"></a>            res<span class="sc">$</span>quality</span>
+<span id="cb55-45"><a href="#cb55-45" tabindex="-1"></a>          },</span>
+<span id="cb55-46"><a href="#cb55-46" tabindex="-1"></a>          <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb55-47"><a href="#cb55-47" tabindex="-1"></a>        )</span>
+<span id="cb55-48"><a href="#cb55-48" tabindex="-1"></a></span>
+<span id="cb55-49"><a href="#cb55-49" tabindex="-1"></a>        <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-50"><a href="#cb55-50" tabindex="-1"></a>        hc_qs[<span class="fu">as.character</span>(k)] <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb55-51"><a href="#cb55-51" tabindex="-1"></a>          {</span>
+<span id="cb55-52"><a href="#cb55-52" tabindex="-1"></a>            cl <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">k =</span> k)</span>
+<span id="cb55-53"><a href="#cb55-53" tabindex="-1"></a>            <span class="fu">.clust_quality</span>(dm, cl)</span>
+<span id="cb55-54"><a href="#cb55-54" tabindex="-1"></a>          },</span>
+<span id="cb55-55"><a href="#cb55-55" tabindex="-1"></a>          <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb55-56"><a href="#cb55-56" tabindex="-1"></a>        )</span>
+<span id="cb55-57"><a href="#cb55-57" tabindex="-1"></a>      }</span>
+<span id="cb55-58"><a href="#cb55-58" tabindex="-1"></a></span>
+<span id="cb55-59"><a href="#cb55-59" tabindex="-1"></a>      km_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(km_qs, n)</span>
+<span id="cb55-60"><a href="#cb55-60" tabindex="-1"></a>      km_q <span class="ot">&lt;-</span> km_qs[<span class="fu">as.character</span>(km_k)]</span>
+<span id="cb55-61"><a href="#cb55-61" tabindex="-1"></a>      fc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(fc_qs, n)</span>
+<span id="cb55-62"><a href="#cb55-62" tabindex="-1"></a>      fc_q <span class="ot">&lt;-</span> fc_qs[<span class="fu">as.character</span>(fc_k)]</span>
+<span id="cb55-63"><a href="#cb55-63" tabindex="-1"></a>      hc_k <span class="ot">&lt;-</span> <span class="fu">.find_optimal_k</span>(hc_qs, n)</span>
+<span id="cb55-64"><a href="#cb55-64" tabindex="-1"></a>      hc_q <span class="ot">&lt;-</span> hc_qs[<span class="fu">as.character</span>(hc_k)]</span>
+<span id="cb55-65"><a href="#cb55-65" tabindex="-1"></a></span>
+<span id="cb55-66"><a href="#cb55-66" tabindex="-1"></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb55-67"><a href="#cb55-67" tabindex="-1"></a>        <span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">n =</span> n, <span class="at">p =</span> p,</span>
+<span id="cb55-68"><a href="#cb55-68" tabindex="-1"></a>        <span class="at">WH_kmeans =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, km_q, km_k),</span>
+<span id="cb55-69"><a href="#cb55-69" tabindex="-1"></a>        <span class="at">WH_fcmeans =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, fc_q, fc_k),</span>
+<span id="cb55-70"><a href="#cb55-70" tabindex="-1"></a>        <span class="at">WH_hclust =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.4f (%d)&quot;</span>, hc_q, hc_k)</span>
+<span id="cb55-71"><a href="#cb55-71" tabindex="-1"></a>      )</span>
+<span id="cb55-72"><a href="#cb55-72" tabindex="-1"></a>    },</span>
+<span id="cb55-73"><a href="#cb55-73" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span></span>
+<span id="cb55-74"><a href="#cb55-74" tabindex="-1"></a>  )</span>
+<span id="cb55-75"><a href="#cb55-75" tabindex="-1"></a>}))</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">kable</span>(clust_hist_results,</span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Table 5: Histogram clustering quality (1 - WSS/TSS) with optimal k in parentheses&quot;</span></span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="classification-for-interval-valued-data" class="section level2" number="13.4">
 <h2><span class="header-section-number">13.4</span> Classification for
@@ -1505,71 +1595,97 @@ interval data</li>
 <li><code>e1071::svm()</code> – Support vector machine on lower/upper
 bound features</li>
 </ul>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="fu">library</span>(MAINT.Data)</span>
-<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="fu">library</span>(e1071)</span>
-<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a></span>
-<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>datasets_class <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;cars.int&quot;</span>,        <span class="at">data =</span> <span class="st">&quot;cars.int&quot;</span>,</span>
-<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a>       <span class="at">class_col =</span> <span class="st">&quot;class&quot;</span>,</span>
-<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a>       <span class="at">class_desc =</span> <span class="st">&quot;class: Utilitarian(7), Berlina(8), Sportive(8), Luxury(4)&quot;</span>),</span>
-<span id="cb58-8"><a href="#cb58-8" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;china_temp.int&quot;</span>,  <span class="at">data =</span> <span class="st">&quot;china_temp.int&quot;</span>,</span>
-<span id="cb58-9"><a href="#cb58-9" tabindex="-1"></a>       <span class="at">class_col =</span> <span class="st">&quot;GeoReg&quot;</span>,</span>
-<span id="cb58-10"><a href="#cb58-10" tabindex="-1"></a>       <span class="at">class_desc =</span> <span class="st">&quot;GeoReg: 6 regions&quot;</span>),</span>
-<span id="cb58-11"><a href="#cb58-11" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;mushroom.int&quot;</span>,    <span class="at">data =</span> <span class="st">&quot;mushroom.int&quot;</span>,</span>
-<span id="cb58-12"><a href="#cb58-12" tabindex="-1"></a>       <span class="at">class_col =</span> <span class="st">&quot;Edibility&quot;</span>,</span>
-<span id="cb58-13"><a href="#cb58-13" tabindex="-1"></a>       <span class="at">class_desc =</span> <span class="st">&quot;Edibility: T(4), U(2), Y(17)&quot;</span>),</span>
-<span id="cb58-14"><a href="#cb58-14" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;ohtemp.int&quot;</span>,      <span class="at">data =</span> <span class="st">&quot;ohtemp.int&quot;</span>,</span>
-<span id="cb58-15"><a href="#cb58-15" tabindex="-1"></a>       <span class="at">class_col =</span> <span class="st">&quot;STATE&quot;</span>,</span>
-<span id="cb58-16"><a href="#cb58-16" tabindex="-1"></a>       <span class="at">class_desc =</span> <span class="st">&quot;STATE: 10 groups&quot;</span>),</span>
-<span id="cb58-17"><a href="#cb58-17" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;wine.int&quot;</span>,        <span class="at">data =</span> <span class="st">&quot;wine.int&quot;</span>,</span>
-<span id="cb58-18"><a href="#cb58-18" tabindex="-1"></a>       <span class="at">class_col =</span> <span class="st">&quot;class&quot;</span>,</span>
-<span id="cb58-19"><a href="#cb58-19" tabindex="-1"></a>       <span class="at">class_desc =</span> <span class="st">&quot;class: 1(21), 2(12)&quot;</span>)</span>
-<span id="cb58-20"><a href="#cb58-20" tabindex="-1"></a>)</span>
-<span id="cb58-21"><a href="#cb58-21" tabindex="-1"></a></span>
-<span id="cb58-22"><a href="#cb58-22" tabindex="-1"></a>class_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_class, <span class="cf">function</span>(ds) {</span>
-<span id="cb58-23"><a href="#cb58-23" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb58-24"><a href="#cb58-24" tabindex="-1"></a>    <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>data)</span>
-<span id="cb58-25"><a href="#cb58-25" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>data)</span>
-<span id="cb58-26"><a href="#cb58-26" tabindex="-1"></a>    grp <span class="ot">&lt;-</span> <span class="fu">.get_class_labels</span>(x, ds<span class="sc">$</span>class_col)</span>
-<span id="cb58-27"><a href="#cb58-27" tabindex="-1"></a></span>
-<span id="cb58-28"><a href="#cb58-28" tabindex="-1"></a>    idata <span class="ot">&lt;-</span> <span class="fu">.build_IData</span>(x)</span>
-<span id="cb58-29"><a href="#cb58-29" tabindex="-1"></a></span>
-<span id="cb58-30"><a href="#cb58-30" tabindex="-1"></a>    int_cols <span class="ot">&lt;-</span> <span class="fu">sapply</span>(x, <span class="cf">function</span>(col) <span class="fu">inherits</span>(col, <span class="st">&quot;symbolic_interval&quot;</span>))</span>
-<span id="cb58-31"><a href="#cb58-31" tabindex="-1"></a>    svm_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(x)))</span>
-<span id="cb58-32"><a href="#cb58-32" tabindex="-1"></a>    <span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">names</span>(x)[int_cols]) {</span>
-<span id="cb58-33"><a href="#cb58-33" tabindex="-1"></a>      cv <span class="ot">&lt;-</span> <span class="fu">unclass</span>(x[[v]])</span>
-<span id="cb58-34"><a href="#cb58-34" tabindex="-1"></a>      svm_df[[<span class="fu">paste0</span>(v, <span class="st">&quot;_l&quot;</span>)]] <span class="ot">&lt;-</span> <span class="fu">Re</span>(cv)</span>
-<span id="cb58-35"><a href="#cb58-35" tabindex="-1"></a>      svm_df[[<span class="fu">paste0</span>(v, <span class="st">&quot;_u&quot;</span>)]] <span class="ot">&lt;-</span> <span class="fu">Im</span>(cv)</span>
-<span id="cb58-36"><a href="#cb58-36" tabindex="-1"></a>    }</span>
-<span id="cb58-37"><a href="#cb58-37" tabindex="-1"></a></span>
-<span id="cb58-38"><a href="#cb58-38" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb58-39"><a href="#cb58-39" tabindex="-1"></a>    lda_acc <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb58-40"><a href="#cb58-40" tabindex="-1"></a>      res <span class="ot">&lt;-</span> MAINT.Data<span class="sc">::</span><span class="fu">lda</span>(idata, <span class="at">grouping =</span> grp)</span>
-<span id="cb58-41"><a href="#cb58-41" tabindex="-1"></a>      pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(res, idata)</span>
-<span id="cb58-42"><a href="#cb58-42" tabindex="-1"></a>      <span class="fu">mean</span>(pred<span class="sc">$</span>class <span class="sc">==</span> grp)</span>
-<span id="cb58-43"><a href="#cb58-43" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb58-44"><a href="#cb58-44" tabindex="-1"></a></span>
-<span id="cb58-45"><a href="#cb58-45" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb58-46"><a href="#cb58-46" tabindex="-1"></a>    qda_acc <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb58-47"><a href="#cb58-47" tabindex="-1"></a>      res <span class="ot">&lt;-</span> MAINT.Data<span class="sc">::</span><span class="fu">qda</span>(idata, <span class="at">grouping =</span> grp)</span>
-<span id="cb58-48"><a href="#cb58-48" tabindex="-1"></a>      pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(res, idata)</span>
-<span id="cb58-49"><a href="#cb58-49" tabindex="-1"></a>      <span class="fu">mean</span>(pred<span class="sc">$</span>class <span class="sc">==</span> grp)</span>
-<span id="cb58-50"><a href="#cb58-50" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb58-51"><a href="#cb58-51" tabindex="-1"></a></span>
-<span id="cb58-52"><a href="#cb58-52" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb58-53"><a href="#cb58-53" tabindex="-1"></a>    svm_acc <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb58-54"><a href="#cb58-54" tabindex="-1"></a>      svm_df<span class="sc">$</span>class <span class="ot">&lt;-</span> grp</span>
-<span id="cb58-55"><a href="#cb58-55" tabindex="-1"></a>      res <span class="ot">&lt;-</span> <span class="fu">svm</span>(class <span class="sc">~</span> ., <span class="at">data =</span> svm_df, <span class="at">kernel =</span> <span class="st">&quot;radial&quot;</span>)</span>
-<span id="cb58-56"><a href="#cb58-56" tabindex="-1"></a>      pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(res, svm_df)</span>
-<span id="cb58-57"><a href="#cb58-57" tabindex="-1"></a>      <span class="fu">mean</span>(pred <span class="sc">==</span> grp)</span>
-<span id="cb58-58"><a href="#cb58-58" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb58-59"><a href="#cb58-59" tabindex="-1"></a></span>
-<span id="cb58-60"><a href="#cb58-60" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">Response =</span> ds<span class="sc">$</span>class_desc,</span>
-<span id="cb58-61"><a href="#cb58-61" tabindex="-1"></a>               <span class="at">LDA =</span> lda_acc, <span class="at">QDA =</span> qda_acc, <span class="at">SVM =</span> svm_acc)</span>
-<span id="cb58-62"><a href="#cb58-62" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
-<span id="cb58-63"><a href="#cb58-63" tabindex="-1"></a>}))</span></code></pre></div>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="fu">kable</span>(class_results, <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Table 6: Classification accuracy (resubstitution)&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">library</span>(MAINT.Data)</span>
+<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a><span class="fu">library</span>(e1071)</span>
+<span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" tabindex="-1"></a>datasets_class <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb57-5"><a href="#cb57-5" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb57-6"><a href="#cb57-6" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;cars.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;cars.int&quot;</span>,</span>
+<span id="cb57-7"><a href="#cb57-7" tabindex="-1"></a>    <span class="at">class_col =</span> <span class="st">&quot;class&quot;</span>,</span>
+<span id="cb57-8"><a href="#cb57-8" tabindex="-1"></a>    <span class="at">class_desc =</span> <span class="st">&quot;class: Utilitarian(7), Berlina(8), Sportive(8), Luxury(4)&quot;</span></span>
+<span id="cb57-9"><a href="#cb57-9" tabindex="-1"></a>  ),</span>
+<span id="cb57-10"><a href="#cb57-10" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb57-11"><a href="#cb57-11" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;china_temp.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;china_temp.int&quot;</span>,</span>
+<span id="cb57-12"><a href="#cb57-12" tabindex="-1"></a>    <span class="at">class_col =</span> <span class="st">&quot;GeoReg&quot;</span>,</span>
+<span id="cb57-13"><a href="#cb57-13" tabindex="-1"></a>    <span class="at">class_desc =</span> <span class="st">&quot;GeoReg: 6 regions&quot;</span></span>
+<span id="cb57-14"><a href="#cb57-14" tabindex="-1"></a>  ),</span>
+<span id="cb57-15"><a href="#cb57-15" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb57-16"><a href="#cb57-16" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;mushroom.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;mushroom.int&quot;</span>,</span>
+<span id="cb57-17"><a href="#cb57-17" tabindex="-1"></a>    <span class="at">class_col =</span> <span class="st">&quot;Edibility&quot;</span>,</span>
+<span id="cb57-18"><a href="#cb57-18" tabindex="-1"></a>    <span class="at">class_desc =</span> <span class="st">&quot;Edibility: T(4), U(2), Y(17)&quot;</span></span>
+<span id="cb57-19"><a href="#cb57-19" tabindex="-1"></a>  ),</span>
+<span id="cb57-20"><a href="#cb57-20" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb57-21"><a href="#cb57-21" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;ohtemp.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;ohtemp.int&quot;</span>,</span>
+<span id="cb57-22"><a href="#cb57-22" tabindex="-1"></a>    <span class="at">class_col =</span> <span class="st">&quot;STATE&quot;</span>,</span>
+<span id="cb57-23"><a href="#cb57-23" tabindex="-1"></a>    <span class="at">class_desc =</span> <span class="st">&quot;STATE: 10 groups&quot;</span></span>
+<span id="cb57-24"><a href="#cb57-24" tabindex="-1"></a>  ),</span>
+<span id="cb57-25"><a href="#cb57-25" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb57-26"><a href="#cb57-26" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;wine.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;wine.int&quot;</span>,</span>
+<span id="cb57-27"><a href="#cb57-27" tabindex="-1"></a>    <span class="at">class_col =</span> <span class="st">&quot;class&quot;</span>,</span>
+<span id="cb57-28"><a href="#cb57-28" tabindex="-1"></a>    <span class="at">class_desc =</span> <span class="st">&quot;class: 1(21), 2(12)&quot;</span></span>
+<span id="cb57-29"><a href="#cb57-29" tabindex="-1"></a>  )</span>
+<span id="cb57-30"><a href="#cb57-30" tabindex="-1"></a>)</span>
+<span id="cb57-31"><a href="#cb57-31" tabindex="-1"></a></span>
+<span id="cb57-32"><a href="#cb57-32" tabindex="-1"></a>class_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_class, <span class="cf">function</span>(ds) {</span>
+<span id="cb57-33"><a href="#cb57-33" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb57-34"><a href="#cb57-34" tabindex="-1"></a>    {</span>
+<span id="cb57-35"><a href="#cb57-35" tabindex="-1"></a>      <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>data)</span>
+<span id="cb57-36"><a href="#cb57-36" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>data)</span>
+<span id="cb57-37"><a href="#cb57-37" tabindex="-1"></a>      grp <span class="ot">&lt;-</span> <span class="fu">.get_class_labels</span>(x, ds<span class="sc">$</span>class_col)</span>
+<span id="cb57-38"><a href="#cb57-38" tabindex="-1"></a></span>
+<span id="cb57-39"><a href="#cb57-39" tabindex="-1"></a>      idata <span class="ot">&lt;-</span> <span class="fu">.build_IData</span>(x)</span>
+<span id="cb57-40"><a href="#cb57-40" tabindex="-1"></a></span>
+<span id="cb57-41"><a href="#cb57-41" tabindex="-1"></a>      int_cols <span class="ot">&lt;-</span> <span class="fu">sapply</span>(x, <span class="cf">function</span>(col) <span class="fu">inherits</span>(col, <span class="st">&quot;symbolic_interval&quot;</span>))</span>
+<span id="cb57-42"><a href="#cb57-42" tabindex="-1"></a>      svm_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(x)))</span>
+<span id="cb57-43"><a href="#cb57-43" tabindex="-1"></a>      <span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">names</span>(x)[int_cols]) {</span>
+<span id="cb57-44"><a href="#cb57-44" tabindex="-1"></a>        cv <span class="ot">&lt;-</span> <span class="fu">unclass</span>(x[[v]])</span>
+<span id="cb57-45"><a href="#cb57-45" tabindex="-1"></a>        svm_df[[<span class="fu">paste0</span>(v, <span class="st">&quot;_l&quot;</span>)]] <span class="ot">&lt;-</span> <span class="fu">Re</span>(cv)</span>
+<span id="cb57-46"><a href="#cb57-46" tabindex="-1"></a>        svm_df[[<span class="fu">paste0</span>(v, <span class="st">&quot;_u&quot;</span>)]] <span class="ot">&lt;-</span> <span class="fu">Im</span>(cv)</span>
+<span id="cb57-47"><a href="#cb57-47" tabindex="-1"></a>      }</span>
+<span id="cb57-48"><a href="#cb57-48" tabindex="-1"></a></span>
+<span id="cb57-49"><a href="#cb57-49" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb57-50"><a href="#cb57-50" tabindex="-1"></a>      lda_acc <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb57-51"><a href="#cb57-51" tabindex="-1"></a>        {</span>
+<span id="cb57-52"><a href="#cb57-52" tabindex="-1"></a>          res <span class="ot">&lt;-</span> MAINT.Data<span class="sc">::</span><span class="fu">lda</span>(idata, <span class="at">grouping =</span> grp)</span>
+<span id="cb57-53"><a href="#cb57-53" tabindex="-1"></a>          pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(res, idata)</span>
+<span id="cb57-54"><a href="#cb57-54" tabindex="-1"></a>          <span class="fu">mean</span>(pred<span class="sc">$</span>class <span class="sc">==</span> grp)</span>
+<span id="cb57-55"><a href="#cb57-55" tabindex="-1"></a>        },</span>
+<span id="cb57-56"><a href="#cb57-56" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb57-57"><a href="#cb57-57" tabindex="-1"></a>      )</span>
+<span id="cb57-58"><a href="#cb57-58" tabindex="-1"></a></span>
+<span id="cb57-59"><a href="#cb57-59" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb57-60"><a href="#cb57-60" tabindex="-1"></a>      qda_acc <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb57-61"><a href="#cb57-61" tabindex="-1"></a>        {</span>
+<span id="cb57-62"><a href="#cb57-62" tabindex="-1"></a>          res <span class="ot">&lt;-</span> MAINT.Data<span class="sc">::</span><span class="fu">qda</span>(idata, <span class="at">grouping =</span> grp)</span>
+<span id="cb57-63"><a href="#cb57-63" tabindex="-1"></a>          pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(res, idata)</span>
+<span id="cb57-64"><a href="#cb57-64" tabindex="-1"></a>          <span class="fu">mean</span>(pred<span class="sc">$</span>class <span class="sc">==</span> grp)</span>
+<span id="cb57-65"><a href="#cb57-65" tabindex="-1"></a>        },</span>
+<span id="cb57-66"><a href="#cb57-66" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb57-67"><a href="#cb57-67" tabindex="-1"></a>      )</span>
+<span id="cb57-68"><a href="#cb57-68" tabindex="-1"></a></span>
+<span id="cb57-69"><a href="#cb57-69" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb57-70"><a href="#cb57-70" tabindex="-1"></a>      svm_acc <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb57-71"><a href="#cb57-71" tabindex="-1"></a>        {</span>
+<span id="cb57-72"><a href="#cb57-72" tabindex="-1"></a>          svm_df<span class="sc">$</span>class <span class="ot">&lt;-</span> grp</span>
+<span id="cb57-73"><a href="#cb57-73" tabindex="-1"></a>          res <span class="ot">&lt;-</span> <span class="fu">svm</span>(class <span class="sc">~</span> ., <span class="at">data =</span> svm_df, <span class="at">kernel =</span> <span class="st">&quot;radial&quot;</span>)</span>
+<span id="cb57-74"><a href="#cb57-74" tabindex="-1"></a>          pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(res, svm_df)</span>
+<span id="cb57-75"><a href="#cb57-75" tabindex="-1"></a>          <span class="fu">mean</span>(pred <span class="sc">==</span> grp)</span>
+<span id="cb57-76"><a href="#cb57-76" tabindex="-1"></a>        },</span>
+<span id="cb57-77"><a href="#cb57-77" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb57-78"><a href="#cb57-78" tabindex="-1"></a>      )</span>
+<span id="cb57-79"><a href="#cb57-79" tabindex="-1"></a></span>
+<span id="cb57-80"><a href="#cb57-80" tabindex="-1"></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb57-81"><a href="#cb57-81" tabindex="-1"></a>        <span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">Response =</span> ds<span class="sc">$</span>class_desc,</span>
+<span id="cb57-82"><a href="#cb57-82" tabindex="-1"></a>        <span class="at">LDA =</span> lda_acc, <span class="at">QDA =</span> qda_acc, <span class="at">SVM =</span> svm_acc</span>
+<span id="cb57-83"><a href="#cb57-83" tabindex="-1"></a>      )</span>
+<span id="cb57-84"><a href="#cb57-84" tabindex="-1"></a>    },</span>
+<span id="cb57-85"><a href="#cb57-85" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span></span>
+<span id="cb57-86"><a href="#cb57-86" tabindex="-1"></a>  )</span>
+<span id="cb57-87"><a href="#cb57-87" tabindex="-1"></a>}))</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="fu">kable</span>(class_results,</span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Table 6: Classification accuracy (resubstitution)&quot;</span></span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="regression-for-interval-valued-data" class="section level2" number="13.5">
 <h2><span class="header-section-number">13.5</span> Regression for
@@ -1585,102 +1701,139 @@ method)</li>
 <li><code>RSDA::sym.rt()</code> – Symbolic regression tree</li>
 <li><code>RSDA::sym.nnet()</code> – Symbolic neural network</li>
 </ul>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>datasets_reg <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;abalone.iGAP&quot;</span>,      <span class="at">data =</span> <span class="st">&quot;abalone.iGAP&quot;</span>,</span>
-<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a>       <span class="at">response =</span> <span class="st">&quot;Length&quot;</span>,           <span class="at">n_x =</span> <span class="dv">6</span>),</span>
-<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;cardiological.int&quot;</span>,  <span class="at">data =</span> <span class="st">&quot;cardiological.int&quot;</span>,</span>
-<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a>       <span class="at">response =</span> <span class="st">&quot;pulse&quot;</span>,            <span class="at">n_x =</span> <span class="dv">4</span>),</span>
-<span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;nycflights.int&quot;</span>,     <span class="at">data =</span> <span class="st">&quot;nycflights.int&quot;</span>,</span>
-<span id="cb60-7"><a href="#cb60-7" tabindex="-1"></a>       <span class="at">response =</span> <span class="st">&quot;distance&quot;</span>,         <span class="at">n_x =</span> <span class="dv">3</span>),</span>
-<span id="cb60-8"><a href="#cb60-8" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;oils.int&quot;</span>,           <span class="at">data =</span> <span class="st">&quot;oils.int&quot;</span>,</span>
-<span id="cb60-9"><a href="#cb60-9" tabindex="-1"></a>       <span class="at">response =</span> <span class="st">&quot;specific_gravity&quot;</span>, <span class="at">n_x =</span> <span class="dv">3</span>),</span>
-<span id="cb60-10"><a href="#cb60-10" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;prostate.int&quot;</span>,       <span class="at">data =</span> <span class="st">&quot;prostate.int&quot;</span>,</span>
-<span id="cb60-11"><a href="#cb60-11" tabindex="-1"></a>       <span class="at">response =</span> <span class="st">&quot;lpsa&quot;</span>,             <span class="at">n_x =</span> <span class="dv">8</span>)</span>
-<span id="cb60-12"><a href="#cb60-12" tabindex="-1"></a>)</span>
-<span id="cb60-13"><a href="#cb60-13" tabindex="-1"></a></span>
-<span id="cb60-14"><a href="#cb60-14" tabindex="-1"></a>reg_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_reg, <span class="cf">function</span>(ds) {</span>
-<span id="cb60-15"><a href="#cb60-15" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb60-16"><a href="#cb60-16" tabindex="-1"></a>    <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>data)</span>
-<span id="cb60-17"><a href="#cb60-17" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>data)</span>
-<span id="cb60-18"><a href="#cb60-18" tabindex="-1"></a></span>
-<span id="cb60-19"><a href="#cb60-19" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>)) {</span>
-<span id="cb60-20"><a href="#cb60-20" tabindex="-1"></a>      x2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">int_convert_format</span>(x, <span class="at">to =</span> <span class="st">&quot;RSDA&quot;</span>), <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
-<span id="cb60-21"><a href="#cb60-21" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(x2)) {</span>
-<span id="cb60-22"><a href="#cb60-22" tabindex="-1"></a>        x <span class="ot">&lt;-</span> x2</span>
-<span id="cb60-23"><a href="#cb60-23" tabindex="-1"></a>        <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
-<span id="cb60-24"><a href="#cb60-24" tabindex="-1"></a>          <span class="cf">if</span> (<span class="fu">is.complex</span>(x[[i]]) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">inherits</span>(x[[i]], <span class="st">&quot;symbolic_interval&quot;</span>))</span>
-<span id="cb60-25"><a href="#cb60-25" tabindex="-1"></a>            <span class="fu">class</span>(x[[i]]) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
-<span id="cb60-26"><a href="#cb60-26" tabindex="-1"></a>        }</span>
-<span id="cb60-27"><a href="#cb60-27" tabindex="-1"></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>))</span>
-<span id="cb60-28"><a href="#cb60-28" tabindex="-1"></a>          <span class="fu">class</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_tbl&quot;</span>, <span class="fu">class</span>(x))</span>
-<span id="cb60-29"><a href="#cb60-29" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
-<span id="cb60-30"><a href="#cb60-30" tabindex="-1"></a>        cn <span class="ot">&lt;-</span> <span class="fu">colnames</span>(x)</span>
-<span id="cb60-31"><a href="#cb60-31" tabindex="-1"></a>        l_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">&quot;_l$&quot;</span>, cn, <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb60-32"><a href="#cb60-32" tabindex="-1"></a>        vars <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;_l$&quot;</span>, <span class="st">&quot;&quot;</span>, l_cols)</span>
-<span id="cb60-33"><a href="#cb60-33" tabindex="-1"></a>        out <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(x)))</span>
-<span id="cb60-34"><a href="#cb60-34" tabindex="-1"></a>        <span class="cf">for</span> (v <span class="cf">in</span> vars) {</span>
-<span id="cb60-35"><a href="#cb60-35" tabindex="-1"></a>          lv <span class="ot">&lt;-</span> x[[<span class="fu">paste0</span>(v, <span class="st">&quot;_l&quot;</span>)]]; uv <span class="ot">&lt;-</span> x[[<span class="fu">paste0</span>(v, <span class="st">&quot;_u&quot;</span>)]]</span>
-<span id="cb60-36"><a href="#cb60-36" tabindex="-1"></a>          si <span class="ot">&lt;-</span> <span class="fu">complex</span>(<span class="at">real =</span> lv, <span class="at">imaginary =</span> uv)</span>
-<span id="cb60-37"><a href="#cb60-37" tabindex="-1"></a>          <span class="fu">class</span>(si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
-<span id="cb60-38"><a href="#cb60-38" tabindex="-1"></a>          out[[v]] <span class="ot">&lt;-</span> si</span>
-<span id="cb60-39"><a href="#cb60-39" tabindex="-1"></a>        }</span>
-<span id="cb60-40"><a href="#cb60-40" tabindex="-1"></a>        <span class="fu">class</span>(out) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_tbl&quot;</span>, <span class="fu">class</span>(out))</span>
-<span id="cb60-41"><a href="#cb60-41" tabindex="-1"></a>        x <span class="ot">&lt;-</span> out</span>
-<span id="cb60-42"><a href="#cb60-42" tabindex="-1"></a>      }</span>
-<span id="cb60-43"><a href="#cb60-43" tabindex="-1"></a>    }</span>
-<span id="cb60-44"><a href="#cb60-44" tabindex="-1"></a>    x_int <span class="ot">&lt;-</span> <span class="fu">.get_interval_cols</span>(x)</span>
-<span id="cb60-45"><a href="#cb60-45" tabindex="-1"></a></span>
-<span id="cb60-46"><a href="#cb60-46" tabindex="-1"></a>    fml <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(ds<span class="sc">$</span>response, <span class="st">&quot;~ .&quot;</span>))</span>
-<span id="cb60-47"><a href="#cb60-47" tabindex="-1"></a>    nc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(x_int)))</span>
-<span id="cb60-48"><a href="#cb60-48" tabindex="-1"></a>    <span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">names</span>(x_int)) {</span>
-<span id="cb60-49"><a href="#cb60-49" tabindex="-1"></a>      cv <span class="ot">&lt;-</span> <span class="fu">unclass</span>(x_int[[v]])</span>
-<span id="cb60-50"><a href="#cb60-50" tabindex="-1"></a>      nc[[v]] <span class="ot">&lt;-</span> (<span class="fu">Re</span>(cv) <span class="sc">+</span> <span class="fu">Im</span>(cv)) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb60-51"><a href="#cb60-51" tabindex="-1"></a>    }</span>
-<span id="cb60-52"><a href="#cb60-52" tabindex="-1"></a>    actual <span class="ot">&lt;-</span> nc[[ds<span class="sc">$</span>response]]</span>
-<span id="cb60-53"><a href="#cb60-53" tabindex="-1"></a>    resp_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">names</span>(x_int) <span class="sc">==</span> ds<span class="sc">$</span>response)</span>
-<span id="cb60-54"><a href="#cb60-54" tabindex="-1"></a>    .r2 <span class="ot">&lt;-</span> <span class="cf">function</span>(a, p) <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((a <span class="sc">-</span> p)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((a <span class="sc">-</span> <span class="fu">mean</span>(a))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb60-55"><a href="#cb60-55" tabindex="-1"></a></span>
-<span id="cb60-56"><a href="#cb60-56" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb60-57"><a href="#cb60-57" tabindex="-1"></a>    lm_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb60-58"><a href="#cb60-58" tabindex="-1"></a>      res <span class="ot">&lt;-</span> <span class="fu">sym.lm</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
-<span id="cb60-59"><a href="#cb60-59" tabindex="-1"></a>      <span class="fu">summary</span>(res)<span class="sc">$</span>r.squared</span>
-<span id="cb60-60"><a href="#cb60-60" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb60-61"><a href="#cb60-61" tabindex="-1"></a></span>
-<span id="cb60-62"><a href="#cb60-62" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb60-63"><a href="#cb60-63" tabindex="-1"></a>    glm_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb60-64"><a href="#cb60-64" tabindex="-1"></a>      res <span class="ot">&lt;-</span> <span class="fu">sym.glm</span>(<span class="at">sym.data =</span> x_int, <span class="at">response =</span> resp_idx, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
-<span id="cb60-65"><a href="#cb60-65" tabindex="-1"></a>      pred <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">predict</span>(res, <span class="at">newx =</span> <span class="fu">as.matrix</span>(nc[, <span class="sc">-</span>resp_idx]),</span>
-<span id="cb60-66"><a href="#cb60-66" tabindex="-1"></a>                                 <span class="at">s =</span> <span class="st">&quot;lambda.min&quot;</span>))</span>
-<span id="cb60-67"><a href="#cb60-67" tabindex="-1"></a>      <span class="fu">.r2</span>(actual, pred)</span>
-<span id="cb60-68"><a href="#cb60-68" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb60-69"><a href="#cb60-69" tabindex="-1"></a></span>
-<span id="cb60-70"><a href="#cb60-70" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb60-71"><a href="#cb60-71" tabindex="-1"></a>    rf_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb60-72"><a href="#cb60-72" tabindex="-1"></a>      res <span class="ot">&lt;-</span> <span class="fu">sym.rf</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
-<span id="cb60-73"><a href="#cb60-73" tabindex="-1"></a>      <span class="fu">tail</span>(res<span class="sc">$</span>rsq, <span class="dv">1</span>)</span>
-<span id="cb60-74"><a href="#cb60-74" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb60-75"><a href="#cb60-75" tabindex="-1"></a></span>
-<span id="cb60-76"><a href="#cb60-76" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb60-77"><a href="#cb60-77" tabindex="-1"></a>    rt_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb60-78"><a href="#cb60-78" tabindex="-1"></a>      res <span class="ot">&lt;-</span> <span class="fu">sym.rt</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
-<span id="cb60-79"><a href="#cb60-79" tabindex="-1"></a>      <span class="fu">.r2</span>(actual, <span class="fu">predict</span>(res))</span>
-<span id="cb60-80"><a href="#cb60-80" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb60-81"><a href="#cb60-81" tabindex="-1"></a></span>
-<span id="cb60-82"><a href="#cb60-82" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb60-83"><a href="#cb60-83" tabindex="-1"></a>    nnet_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb60-84"><a href="#cb60-84" tabindex="-1"></a>      res <span class="ot">&lt;-</span> <span class="fu">sym.nnet</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
-<span id="cb60-85"><a href="#cb60-85" tabindex="-1"></a>      pred_sc <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(res<span class="sc">$</span>net.result[[<span class="dv">1</span>]])</span>
-<span id="cb60-86"><a href="#cb60-86" tabindex="-1"></a>      pred <span class="ot">&lt;-</span> pred_sc <span class="sc">*</span> res<span class="sc">$</span>data_c_sds[resp_idx] <span class="sc">+</span> res<span class="sc">$</span>data_c_means[resp_idx]</span>
-<span id="cb60-87"><a href="#cb60-87" tabindex="-1"></a>      <span class="fu">.r2</span>(actual, pred)</span>
-<span id="cb60-88"><a href="#cb60-88" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span>)</span>
-<span id="cb60-89"><a href="#cb60-89" tabindex="-1"></a></span>
-<span id="cb60-90"><a href="#cb60-90" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">Response =</span> ds<span class="sc">$</span>response, <span class="at">p =</span> ds<span class="sc">$</span>n_x,</span>
-<span id="cb60-91"><a href="#cb60-91" tabindex="-1"></a>               <span class="at">sym.lm =</span> lm_r2, <span class="at">sym.glm =</span> glm_r2, <span class="at">sym.rf =</span> rf_r2,</span>
-<span id="cb60-92"><a href="#cb60-92" tabindex="-1"></a>               <span class="at">sym.rt =</span> rt_r2, <span class="at">sym.nnet =</span> nnet_r2)</span>
-<span id="cb60-93"><a href="#cb60-93" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
-<span id="cb60-94"><a href="#cb60-94" tabindex="-1"></a>}))</span></code></pre></div>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="fu">kable</span>(reg_results, <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Table 7: Regression R-squared&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>datasets_reg <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;abalone.iGAP&quot;</span>, <span class="at">data =</span> <span class="st">&quot;abalone.iGAP&quot;</span>,</span>
+<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>    <span class="at">response =</span> <span class="st">&quot;Length&quot;</span>, <span class="at">n_x =</span> <span class="dv">6</span></span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>  ),</span>
+<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;cardiological.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;cardiological.int&quot;</span>,</span>
+<span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a>    <span class="at">response =</span> <span class="st">&quot;pulse&quot;</span>, <span class="at">n_x =</span> <span class="dv">4</span></span>
+<span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a>  ),</span>
+<span id="cb59-10"><a href="#cb59-10" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb59-11"><a href="#cb59-11" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;nycflights.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;nycflights.int&quot;</span>,</span>
+<span id="cb59-12"><a href="#cb59-12" tabindex="-1"></a>    <span class="at">response =</span> <span class="st">&quot;distance&quot;</span>, <span class="at">n_x =</span> <span class="dv">3</span></span>
+<span id="cb59-13"><a href="#cb59-13" tabindex="-1"></a>  ),</span>
+<span id="cb59-14"><a href="#cb59-14" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb59-15"><a href="#cb59-15" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;oils.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;oils.int&quot;</span>,</span>
+<span id="cb59-16"><a href="#cb59-16" tabindex="-1"></a>    <span class="at">response =</span> <span class="st">&quot;specific_gravity&quot;</span>, <span class="at">n_x =</span> <span class="dv">3</span></span>
+<span id="cb59-17"><a href="#cb59-17" tabindex="-1"></a>  ),</span>
+<span id="cb59-18"><a href="#cb59-18" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb59-19"><a href="#cb59-19" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;prostate.int&quot;</span>, <span class="at">data =</span> <span class="st">&quot;prostate.int&quot;</span>,</span>
+<span id="cb59-20"><a href="#cb59-20" tabindex="-1"></a>    <span class="at">response =</span> <span class="st">&quot;lpsa&quot;</span>, <span class="at">n_x =</span> <span class="dv">8</span></span>
+<span id="cb59-21"><a href="#cb59-21" tabindex="-1"></a>  )</span>
+<span id="cb59-22"><a href="#cb59-22" tabindex="-1"></a>)</span>
+<span id="cb59-23"><a href="#cb59-23" tabindex="-1"></a></span>
+<span id="cb59-24"><a href="#cb59-24" tabindex="-1"></a>reg_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(datasets_reg, <span class="cf">function</span>(ds) {</span>
+<span id="cb59-25"><a href="#cb59-25" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb59-26"><a href="#cb59-26" tabindex="-1"></a>    {</span>
+<span id="cb59-27"><a href="#cb59-27" tabindex="-1"></a>      <span class="fu">data</span>(<span class="at">list =</span> ds<span class="sc">$</span>data)</span>
+<span id="cb59-28"><a href="#cb59-28" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">get</span>(ds<span class="sc">$</span>data)</span>
+<span id="cb59-29"><a href="#cb59-29" tabindex="-1"></a></span>
+<span id="cb59-30"><a href="#cb59-30" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>)) {</span>
+<span id="cb59-31"><a href="#cb59-31" tabindex="-1"></a>        x2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">int_convert_format</span>(x, <span class="at">to =</span> <span class="st">&quot;RSDA&quot;</span>), <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
+<span id="cb59-32"><a href="#cb59-32" tabindex="-1"></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(x2)) {</span>
+<span id="cb59-33"><a href="#cb59-33" tabindex="-1"></a>          x <span class="ot">&lt;-</span> x2</span>
+<span id="cb59-34"><a href="#cb59-34" tabindex="-1"></a>          <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
+<span id="cb59-35"><a href="#cb59-35" tabindex="-1"></a>            <span class="cf">if</span> (<span class="fu">is.complex</span>(x[[i]]) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">inherits</span>(x[[i]], <span class="st">&quot;symbolic_interval&quot;</span>)) {</span>
+<span id="cb59-36"><a href="#cb59-36" tabindex="-1"></a>              <span class="fu">class</span>(x[[i]]) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
+<span id="cb59-37"><a href="#cb59-37" tabindex="-1"></a>            }</span>
+<span id="cb59-38"><a href="#cb59-38" tabindex="-1"></a>          }</span>
+<span id="cb59-39"><a href="#cb59-39" tabindex="-1"></a>          <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(x, <span class="st">&quot;symbolic_tbl&quot;</span>)) {</span>
+<span id="cb59-40"><a href="#cb59-40" tabindex="-1"></a>            <span class="fu">class</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_tbl&quot;</span>, <span class="fu">class</span>(x))</span>
+<span id="cb59-41"><a href="#cb59-41" tabindex="-1"></a>          }</span>
+<span id="cb59-42"><a href="#cb59-42" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb59-43"><a href="#cb59-43" tabindex="-1"></a>          cn <span class="ot">&lt;-</span> <span class="fu">colnames</span>(x)</span>
+<span id="cb59-44"><a href="#cb59-44" tabindex="-1"></a>          l_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">&quot;_l$&quot;</span>, cn, <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb59-45"><a href="#cb59-45" tabindex="-1"></a>          vars <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;_l$&quot;</span>, <span class="st">&quot;&quot;</span>, l_cols)</span>
+<span id="cb59-46"><a href="#cb59-46" tabindex="-1"></a>          out <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(x)))</span>
+<span id="cb59-47"><a href="#cb59-47" tabindex="-1"></a>          <span class="cf">for</span> (v <span class="cf">in</span> vars) {</span>
+<span id="cb59-48"><a href="#cb59-48" tabindex="-1"></a>            lv <span class="ot">&lt;-</span> x[[<span class="fu">paste0</span>(v, <span class="st">&quot;_l&quot;</span>)]]</span>
+<span id="cb59-49"><a href="#cb59-49" tabindex="-1"></a>            uv <span class="ot">&lt;-</span> x[[<span class="fu">paste0</span>(v, <span class="st">&quot;_u&quot;</span>)]]</span>
+<span id="cb59-50"><a href="#cb59-50" tabindex="-1"></a>            si <span class="ot">&lt;-</span> <span class="fu">complex</span>(<span class="at">real =</span> lv, <span class="at">imaginary =</span> uv)</span>
+<span id="cb59-51"><a href="#cb59-51" tabindex="-1"></a>            <span class="fu">class</span>(si) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_interval&quot;</span>, <span class="st">&quot;vctrs_vctr&quot;</span>)</span>
+<span id="cb59-52"><a href="#cb59-52" tabindex="-1"></a>            out[[v]] <span class="ot">&lt;-</span> si</span>
+<span id="cb59-53"><a href="#cb59-53" tabindex="-1"></a>          }</span>
+<span id="cb59-54"><a href="#cb59-54" tabindex="-1"></a>          <span class="fu">class</span>(out) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;symbolic_tbl&quot;</span>, <span class="fu">class</span>(out))</span>
+<span id="cb59-55"><a href="#cb59-55" tabindex="-1"></a>          x <span class="ot">&lt;-</span> out</span>
+<span id="cb59-56"><a href="#cb59-56" tabindex="-1"></a>        }</span>
+<span id="cb59-57"><a href="#cb59-57" tabindex="-1"></a>      }</span>
+<span id="cb59-58"><a href="#cb59-58" tabindex="-1"></a>      x_int <span class="ot">&lt;-</span> <span class="fu">.get_interval_cols</span>(x)</span>
+<span id="cb59-59"><a href="#cb59-59" tabindex="-1"></a></span>
+<span id="cb59-60"><a href="#cb59-60" tabindex="-1"></a>      fml <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(ds<span class="sc">$</span>response, <span class="st">&quot;~ .&quot;</span>))</span>
+<span id="cb59-61"><a href="#cb59-61" tabindex="-1"></a>      nc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">row.names =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(x_int)))</span>
+<span id="cb59-62"><a href="#cb59-62" tabindex="-1"></a>      <span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">names</span>(x_int)) {</span>
+<span id="cb59-63"><a href="#cb59-63" tabindex="-1"></a>        cv <span class="ot">&lt;-</span> <span class="fu">unclass</span>(x_int[[v]])</span>
+<span id="cb59-64"><a href="#cb59-64" tabindex="-1"></a>        nc[[v]] <span class="ot">&lt;-</span> (<span class="fu">Re</span>(cv) <span class="sc">+</span> <span class="fu">Im</span>(cv)) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb59-65"><a href="#cb59-65" tabindex="-1"></a>      }</span>
+<span id="cb59-66"><a href="#cb59-66" tabindex="-1"></a>      actual <span class="ot">&lt;-</span> nc[[ds<span class="sc">$</span>response]]</span>
+<span id="cb59-67"><a href="#cb59-67" tabindex="-1"></a>      resp_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">names</span>(x_int) <span class="sc">==</span> ds<span class="sc">$</span>response)</span>
+<span id="cb59-68"><a href="#cb59-68" tabindex="-1"></a>      .r2 <span class="ot">&lt;-</span> <span class="cf">function</span>(a, p) <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((a <span class="sc">-</span> p)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((a <span class="sc">-</span> <span class="fu">mean</span>(a))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb59-69"><a href="#cb59-69" tabindex="-1"></a></span>
+<span id="cb59-70"><a href="#cb59-70" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb59-71"><a href="#cb59-71" tabindex="-1"></a>      lm_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb59-72"><a href="#cb59-72" tabindex="-1"></a>        {</span>
+<span id="cb59-73"><a href="#cb59-73" tabindex="-1"></a>          res <span class="ot">&lt;-</span> <span class="fu">sym.lm</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb59-74"><a href="#cb59-74" tabindex="-1"></a>          <span class="fu">summary</span>(res)<span class="sc">$</span>r.squared</span>
+<span id="cb59-75"><a href="#cb59-75" tabindex="-1"></a>        },</span>
+<span id="cb59-76"><a href="#cb59-76" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb59-77"><a href="#cb59-77" tabindex="-1"></a>      )</span>
+<span id="cb59-78"><a href="#cb59-78" tabindex="-1"></a></span>
+<span id="cb59-79"><a href="#cb59-79" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb59-80"><a href="#cb59-80" tabindex="-1"></a>      glm_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb59-81"><a href="#cb59-81" tabindex="-1"></a>        {</span>
+<span id="cb59-82"><a href="#cb59-82" tabindex="-1"></a>          res <span class="ot">&lt;-</span> <span class="fu">sym.glm</span>(<span class="at">sym.data =</span> x_int, <span class="at">response =</span> resp_idx, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb59-83"><a href="#cb59-83" tabindex="-1"></a>          pred <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">predict</span>(res,</span>
+<span id="cb59-84"><a href="#cb59-84" tabindex="-1"></a>            <span class="at">newx =</span> <span class="fu">as.matrix</span>(nc[, <span class="sc">-</span>resp_idx]),</span>
+<span id="cb59-85"><a href="#cb59-85" tabindex="-1"></a>            <span class="at">s =</span> <span class="st">&quot;lambda.min&quot;</span></span>
+<span id="cb59-86"><a href="#cb59-86" tabindex="-1"></a>          ))</span>
+<span id="cb59-87"><a href="#cb59-87" tabindex="-1"></a>          <span class="fu">.r2</span>(actual, pred)</span>
+<span id="cb59-88"><a href="#cb59-88" tabindex="-1"></a>        },</span>
+<span id="cb59-89"><a href="#cb59-89" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb59-90"><a href="#cb59-90" tabindex="-1"></a>      )</span>
+<span id="cb59-91"><a href="#cb59-91" tabindex="-1"></a></span>
+<span id="cb59-92"><a href="#cb59-92" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb59-93"><a href="#cb59-93" tabindex="-1"></a>      rf_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb59-94"><a href="#cb59-94" tabindex="-1"></a>        {</span>
+<span id="cb59-95"><a href="#cb59-95" tabindex="-1"></a>          res <span class="ot">&lt;-</span> <span class="fu">sym.rf</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb59-96"><a href="#cb59-96" tabindex="-1"></a>          <span class="fu">tail</span>(res<span class="sc">$</span>rsq, <span class="dv">1</span>)</span>
+<span id="cb59-97"><a href="#cb59-97" tabindex="-1"></a>        },</span>
+<span id="cb59-98"><a href="#cb59-98" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb59-99"><a href="#cb59-99" tabindex="-1"></a>      )</span>
+<span id="cb59-100"><a href="#cb59-100" tabindex="-1"></a></span>
+<span id="cb59-101"><a href="#cb59-101" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb59-102"><a href="#cb59-102" tabindex="-1"></a>      rt_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb59-103"><a href="#cb59-103" tabindex="-1"></a>        {</span>
+<span id="cb59-104"><a href="#cb59-104" tabindex="-1"></a>          res <span class="ot">&lt;-</span> <span class="fu">sym.rt</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb59-105"><a href="#cb59-105" tabindex="-1"></a>          <span class="fu">.r2</span>(actual, <span class="fu">predict</span>(res))</span>
+<span id="cb59-106"><a href="#cb59-106" tabindex="-1"></a>        },</span>
+<span id="cb59-107"><a href="#cb59-107" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb59-108"><a href="#cb59-108" tabindex="-1"></a>      )</span>
+<span id="cb59-109"><a href="#cb59-109" tabindex="-1"></a></span>
+<span id="cb59-110"><a href="#cb59-110" tabindex="-1"></a>      <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb59-111"><a href="#cb59-111" tabindex="-1"></a>      nnet_r2 <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb59-112"><a href="#cb59-112" tabindex="-1"></a>        {</span>
+<span id="cb59-113"><a href="#cb59-113" tabindex="-1"></a>          res <span class="ot">&lt;-</span> <span class="fu">sym.nnet</span>(fml, <span class="at">sym.data =</span> x_int, <span class="at">method =</span> <span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb59-114"><a href="#cb59-114" tabindex="-1"></a>          pred_sc <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(res<span class="sc">$</span>net.result[[<span class="dv">1</span>]])</span>
+<span id="cb59-115"><a href="#cb59-115" tabindex="-1"></a>          pred <span class="ot">&lt;-</span> pred_sc <span class="sc">*</span> res<span class="sc">$</span>data_c_sds[resp_idx] <span class="sc">+</span> res<span class="sc">$</span>data_c_means[resp_idx]</span>
+<span id="cb59-116"><a href="#cb59-116" tabindex="-1"></a>          <span class="fu">.r2</span>(actual, pred)</span>
+<span id="cb59-117"><a href="#cb59-117" tabindex="-1"></a>        },</span>
+<span id="cb59-118"><a href="#cb59-118" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NA</span></span>
+<span id="cb59-119"><a href="#cb59-119" tabindex="-1"></a>      )</span>
+<span id="cb59-120"><a href="#cb59-120" tabindex="-1"></a></span>
+<span id="cb59-121"><a href="#cb59-121" tabindex="-1"></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb59-122"><a href="#cb59-122" tabindex="-1"></a>        <span class="at">Dataset =</span> ds<span class="sc">$</span>name, <span class="at">Response =</span> ds<span class="sc">$</span>response, <span class="at">p =</span> ds<span class="sc">$</span>n_x,</span>
+<span id="cb59-123"><a href="#cb59-123" tabindex="-1"></a>        <span class="at">sym.lm =</span> lm_r2, <span class="at">sym.glm =</span> glm_r2, <span class="at">sym.rf =</span> rf_r2,</span>
+<span id="cb59-124"><a href="#cb59-124" tabindex="-1"></a>        <span class="at">sym.rt =</span> rt_r2, <span class="at">sym.nnet =</span> nnet_r2</span>
+<span id="cb59-125"><a href="#cb59-125" tabindex="-1"></a>      )</span>
+<span id="cb59-126"><a href="#cb59-126" tabindex="-1"></a>    },</span>
+<span id="cb59-127"><a href="#cb59-127" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span></span>
+<span id="cb59-128"><a href="#cb59-128" tabindex="-1"></a>  )</span>
+<span id="cb59-129"><a href="#cb59-129" tabindex="-1"></a>}))</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="fu">kable</span>(reg_results,</span>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Table 7: Regression R-squared&quot;</span></span>
+<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 </div>
 <div id="symbolic-dataset-donationsubmission-guidelines" class="section level1" number="14">
@@ -1818,8 +1971,8 @@ data).</li>
 <div id="citation" class="section level1" number="15">
 <h1><span class="header-section-number">15</span> Citation</h1>
 <p>Po-Wei Chen, Chun-houh Chen, Han-Ming Wu (2026), dataSDA: datasets
-and basic statistics for symbolic data analysis in R (v0.3.0). Technical
-report.</p>
+and basic statistics for symbolic data analysis in R (v0.2.6). Journal
+of Applied Statistics.</p>
 </div>
 
 

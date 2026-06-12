@@ -1,3 +1,32 @@
+# dataSDA 0.2.6
+
+## New features
+
+- `check_zero_width_intervals()` checks interval-valued data for zero-width
+  intervals (`min == max`). It accepts both MM format (a `data.frame` with
+  paired `_min`/`_max` columns) and RSDA format (a `symbolic_tbl` with
+  `symbolic_interval` columns; non-interval columns are ignored). It returns
+  (invisibly) a logical scalar carrying a `"flagged"` `[n, p]` matrix of
+  degenerate cells and a `"variables"` vector of affected variables, and
+  warns by default when any are found. Useful for screening data before
+  passing it to downstream tools that divide by interval width (e.g.
+  `ggInterval::ggInterval_indexImage()`). A `tol` argument allows near-zero
+  widths to be flagged.
+
+- `aggregate_to_symbolic(type = "int")` gains a `zero_width` argument
+  controlling how zero-width intervals (`min == max`) in the aggregated output
+  are handled: `"keep"` (default) leaves the output untouched, returning any
+  zero-width intervals as-is without warning; `"remove"` drops every concept
+  containing a zero-width interval; `"regenerate"` re-runs the aggregation
+  (re-clustering or re-sampling) until none remain (effective only for
+  stochastic `group_by` such as `"kmeans"`/`"resampling"`); and `"adjust"`
+  adds a small `epsilon` (default `1e-07`) to the upper endpoint of each
+  zero-width interval. A companion `epsilon` argument sets the adjustment
+  amount. For `"remove"` and `"adjust"`, a single warning names the affected
+  variables and the action taken. Such degenerate intervals otherwise break
+  downstream tools such as `ggInterval::ggInterval_indexImage()` (which divides
+  by interval width); use `check_zero_width_intervals()` to screen for them.
+
 # dataSDA 0.2.5
 
 ## New datasets (9 added, 114 total)
@@ -114,7 +143,7 @@ Nineteen new datasets from Billard & Diday (2020) *Clustering Methodology for Sy
 - `county_income_gender.hist` — 12 counties with gendered income histograms + sample sizes (Table 6-16).
 - `joggers.mix` — 10 jogger groups with pulse rate intervals + running time histograms (Table 2-5).
 - `census.mix` — 10 census regions with 6 mixed-type variables: histograms, distributions, multi-valued sets, and intervals (Table 7-23).
-- `mtcars.mix` — 5 car groups with 7 interval + 4 modal variables (from ggESDA).
+- `mtcars.mix` — 5 car groups with 7 interval + 4 modal variables (from ggInterval).
 
 # dataSDA 0.2.0
 
@@ -128,7 +157,7 @@ Thirteen new datasets extracted from R packages and the Billard & Diday (2006) t
 - `uscrime.int` — 46 US states with 102 interval-valued crime statistics (from RSDA).
 - `hardwood.hist` — 5 hardwood tree species with 4 histogram-valued climate variables (from RSDA).
 - `synthetic_clusters.int` — 125 observations in 5 clusters with 6 interval variables (from symbolicDA).
-- `environment.mix` — 14 EPA state groups with mixed interval/modal environmental data (from ggESDA).
+- `environment.mix` — 14 EPA state groups with mixed interval/modal environmental data (from ggInterval).
 
 ### From Billard & Diday (2006) textbook tables
 - `weight_age.hist` — 7 age groups with histogram-valued weight distributions (Table 3.10).
